@@ -79,6 +79,20 @@
   padding: 20rpx;
 }
 
+.search-btn {
+  background: #4CAF50;
+  color: #fff;
+  font-size: 26rpx;
+  width: 80rpx;
+  height: 50rpx;
+  line-height: 50rpx; /* 行高=高度 → 垂直居中 */
+  text-align: center;
+  border-radius: 25rpx;
+  margin-left: 10rpx;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 .history-header {
   display: flex;
   justify-content: space-between;
@@ -225,6 +239,7 @@
   font-size: 32rpx;
   color: #e64340;
   font-weight: bold;
+  vertical-align: middle;
 }
 
 .jump-tag {
