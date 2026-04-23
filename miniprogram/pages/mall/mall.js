@@ -14,174 +14,25 @@ Page({
   },
 
   onLoad: function() {
-    // 初始化商品数据
-    const allProducts = [
-      {
-        id: 1,
-        name: '多肉植物套装',
-        price: 99,
-        image: '/images/products/succulent-set/main.png',
-        category: 'plants',
-        description: '包含多种精选多肉植物，适合室内种植',
-        tags: ['多肉', '室内', '套装'],
-        douyinLink: 'https://haohuo.jinritemai.com/views/product/item2?id=123456'
-      },
-      {
-        id: 2,
-        name: '园艺工具套装',
-        price: 159,
-        image: '/images/products/gardening-tools/main.png',
-        category: 'tools',
-        description: '专业园艺工具套装，包含铲子、剪刀、浇水壶等',
-        tags: ['工具', '套装', '园艺'],
-        douyinLink: 'https://haohuo.jinritemai.com/views/product/item2?id=234567'
-      },
-      {
-        id: 3,
-        name: '绿萝盆栽',
-        price: 49,
-        image: '/images/products/pothos/main.png',
-        category: 'plants',
-        description: '室内净化空气的绿萝盆栽，易于养护',
-        tags: ['绿萝', '室内', '净化空气'],
-        douyinLink: 'https://haohuo.jinritemai.com/views/product/item2?id=345678'
-      },
-      {
-        id: 4,
-        name: '自动浇水器',
-        price: 89,
-        image: '/images/products/auto-watering/main.png',
-        category: 'tools',
-        description: '智能自动浇水器，可定时定量浇水',
-        tags: ['工具', '智能', '浇水'],
-        douyinLink: 'https://haohuo.jinritemai.com/views/product/item2?id=456789'
-      },
-      {
-        id: 5,
-        name: '发财树盆栽',
-        price: 69,
-        image: '/images/products/money-tree/main.png',
-        category: 'plants',
-        description: '寓意吉祥的发财树，适合办公室和家居摆放',
-        tags: ['发财树', '室内', '风水'],
-        douyinLink: 'https://haohuo.jinritemai.com/views/product/item2?id=567890'
-      },
-      {
-        id: 6,
-        name: '植物营养液',
-        price: 39,
-        image: '/images/products/plant-food/main.png',
-        category: 'tools',
-        description: '专业植物营养液，促进植物生长，增强抗病能力',
-        tags: ['营养液', '养护', '肥料'],
-        douyinLink: 'https://haohuo.jinritemai.com/views/product/item2?id=678901'
-      },
-      {
-        id: 7,
-        name: '蝴蝶兰盆栽',
-        price: 129,
-        image: '/images/products/orchid/main.png',
-        category: 'plants',
-        description: '优雅的蝴蝶兰，花期长，适合室内观赏',
-        tags: ['蝴蝶兰', '花卉', '观赏'],
-        douyinLink: 'https://haohuo.jinritemai.com/views/product/item2?id=789012'
-      },
-      {
-        id: 8,
-        name: '园艺手套',
-        price: 29,
-        image: '/images/products/gardening-gloves/main.png',
-        category: 'tools',
-        description: '专业园艺手套，防刺防滑，保护双手',
-        tags: ['手套', '防护', '工具'],
-        douyinLink: 'https://haohuo.jinritemai.com/views/product/item2?id=890123'
-      },
-      {
-        id: 9,
-        name: '空气凤梨',
-        price: 59,
-        image: '/images/products/air-plant/main.png',
-        category: 'plants',
-        description: '无需土壤的空中植物，独特美观，易于养护',
-        tags: ['空气凤梨', '室内', '创意'],
-        douyinLink: 'https://haohuo.jinritemai.com/views/product/item2?id=901234'
-      },
-      {
-        id: 10,
-        name: '植物补光灯',
-        price: 199,
-        image: '/images/products/grow-light/main.png',
-        category: 'tools',
-        description: '专业植物补光灯，促进光合作用，适合室内种植',
-        tags: ['补光灯', '室内', '智能'],
-        douyinLink: 'https://haohuo.jinritemai.com/views/product/item2?id=012345'
-      },
-      {
-        id: 11,
-        name: '文竹盆栽',
-        price: 45,
-        image: '/images/products/asparagus-fern/main.png',
-        category: 'plants',
-        description: '优雅的文竹，适合书房和办公室摆放',
-        tags: ['文竹', '室内', '观赏']
-      },
-      {
-        id: 12,
-        name: '园艺剪刀',
-        price: 49,
-        image: '/images/products/pruning-shears/main.png',
-        category: 'tools',
-        description: '专业园艺剪刀，锋利耐用，适合修剪植物',
-        tags: ['剪刀', '修剪', '工具']
-      },
-      {
-        id: 13,
-        name: '龟背竹盆栽',
-        price: 79,
-        image: '/images/products/monstera/main.png',
-        category: 'plants',
-        description: '大型观叶植物，叶片独特，适合客厅摆放',
-        tags: ['龟背竹', '室内', '观叶']
-      },
-      {
-        id: 14,
-        name: '植物喷雾器',
-        price: 35,
-        image: '/images/products/plant-mister/main.png',
-        category: 'tools',
-        description: '专业植物喷雾器，调节湿度，清洁叶片',
-        tags: ['喷雾器', '养护', '工具']
-      },
-      {
-        id: 15,
-        name: '君子兰盆栽',
-        price: 89,
-        image: '/images/products/clivia/main.png',
-        category: 'plants',
-        description: '优雅的君子兰，花期长，适合室内观赏',
-        tags: ['君子兰', '花卉', '观赏']
-      },
-      {
-        id: 16,
-        name: '园艺铲子',
-        price: 39,
-        image: '/images/products/gardening-shovel/main.png',
-        category: 'tools',
-        description: '专业园艺铲子，坚固耐用，适合松土和移栽',
-        tags: ['铲子', '工具', '园艺']
-      }
-    ];
-    
-    // 保存到全局数据
-    const app = getApp();
-    app.globalData.allProducts = allProducts;
-    
-    this.setData({
-      allProducts,
-      products: allProducts,
-      currentCategory: 'all'
-    });
-
+    const db = wx.cloud.database();
+  
+    // 从云数据库读取商品
+    db.collection('products').get().then(res => {
+      console.log('从云数据库读取成功：', res.data)
+      
+      const allProducts = res.data;
+      const app = getApp();
+      app.globalData.allProducts = allProducts;
+  
+      this.setData({
+        allProducts,
+        products: allProducts,
+        currentCategory: 'all'
+      });
+    }).catch(err => {
+      console.error('读取失败：', err)
+    })
+  
     // 加载搜索历史
     this.loadSearchHistory();
   },

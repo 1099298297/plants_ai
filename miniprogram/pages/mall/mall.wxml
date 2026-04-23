@@ -34,7 +34,7 @@
       <view class="history-header">
         <text>搜索历史</text>
         <image class="clear-history" 
-               src="/images/icons/delete.svg" 
+               src="/images/icons/delete.png" 
                mode="aspectFit"
                bindtap="clearSearchHistory"></image>
       </view>
@@ -44,7 +44,7 @@
               wx:key="*this"
               bindtap="selectSuggestion"
               data-suggestion="{{item}}">
-          <image class="history-icon" src="/images/icons/history.svg" mode="aspectFit"></image>
+          <image class="history-icon" src="/images/icons/history.png" mode="aspectFit"></image>
           <text>{{item}}</text>
         </view>
       </view>
