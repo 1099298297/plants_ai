@@ -7,8 +7,11 @@
 .search-bar {
   padding: 20rpx 0;
   background: #fff;
-  position: sticky;
+  /* 👇 替换这两行 */
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
 }
 
@@ -136,6 +139,7 @@
   padding: 20rpx 0;
   background: #fff;
   margin-bottom: 20rpx;
+  margin-top: 110rpx; /* 👈 加这一句 */
 }
 
 .category-item {

@@ -20,7 +20,6 @@
     </view>
   </view>
 </view>
-
   <view class="search-suggestions" wx:if="{{showSuggestions}}">
     <view class="suggestion-list" wx:if="{{suggestions.length > 0}}">
       <view class="suggestion-item" 

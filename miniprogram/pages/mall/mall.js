@@ -32,7 +32,8 @@ Page({
 
   // 上拉加载更多（瀑布流）
   onReachBottom() {
-    if (this.data.hasMore && !this.data.isLoadMore && !this.data.showSuggestions) {
+    console.log("bottom")
+    if (this.data.hasMore && !this.data.isLoadMore) {
       this.loadMoreProducts();
     }
   },
@@ -60,6 +61,7 @@ Page({
   // 分页查询商品（显示用）
   // ============================
   async getProducts(loadMore = false) {
+    console.log("getProducts");
     const db = wx.cloud.database();
     const { currentCategory, searchValue, page, pageSize, isSearching } = this.data;
 
@@ -147,6 +149,7 @@ Page({
   },
 
   onSearchFocus() {
+    console.log("searchfocus");
     const val = this.data.searchValue.trim();
     // 没输入内容 → 显示历史
     if (!val) {
@@ -156,7 +159,7 @@ Page({
       })
     }
   },
-
+  
   // 生成建议（从预加载的allProducts）
   generateSuggestions(keyword) {
     const allProducts = this.data.allProducts;
