@@ -74,6 +74,11 @@
   align-items: center;
   padding: 0 30rpx;
   box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
+  /* 👇 自动适配手机底部安全区，不遮挡系统按键 */
+  padding-bottom: env(safe-area-inset-bottom);
+  /* 👇 把高度改成自动，保证底部内边距生效 */
+  height: auto;
+  min-height: 100rpx;
 }
 
 .action-item {
@@ -97,7 +102,10 @@
 .buy-now {
   flex: 1;
   height: 80rpx;
-  line-height: 80rpx;
+  /* 核心：用 flex 实现绝对垂直居中 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   background: #e64340;
   color: #fff;

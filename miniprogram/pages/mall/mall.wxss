@@ -203,6 +203,14 @@
   position: relative;
 }
 
+/* 价格 + 标签 同行居中 */
+.price-row {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-top: 6rpx;
+}
+
 .product-name {
   font-size: 28rpx;
   color: #333;
@@ -217,6 +225,20 @@
   font-size: 32rpx;
   color: #e64340;
   font-weight: bold;
+  vertical-align: middle;
+}
+
+.jump-tag {
+  display: inline-block;
+  font-size: 20rpx;
+  padding: 6rpx 7rpx;
+  line-height: 1.2;
+  background: #ffffff;
+  color: #e64340;
+  border: 1rpx solid #e64340;
+  border-radius: 6rpx;
+  vertical-align: middle;
+  margin-left: 8rpx;
 }
 
 .match-tag {
@@ -286,4 +308,4 @@
   font-size: 24rpx;
   color: #999;
   margin-top: 10rpx;
-} 
+}

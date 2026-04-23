@@ -15,9 +15,7 @@
     </view>
   </view>
 
-  <!-- 搜索建议和历史记录 -->
   <view class="search-suggestions" wx:if="{{showSuggestions}}">
-    <!-- 搜索建议 -->
     <view class="suggestion-list" wx:if="{{suggestions.length > 0}}">
       <view class="suggestion-item" 
             wx:for="{{suggestions}}" 
@@ -29,7 +27,6 @@
       </view>
     </view>
     
-    <!-- 搜索历史 -->
     <view class="search-history" wx:if="{{searchHistory.length > 0 && !suggestions.length}}">
       <view class="history-header">
         <text>搜索历史</text>
@@ -61,14 +58,12 @@
   </view>
 
   <view class="content-area">
-    <!-- 加载中状态 -->
     <view class="loading-container" wx:if="{{isLoading}}">
       <view class="loading-spinner"></view>
       <text>搜索中...</text>
     </view>
 
-    <!-- 搜索结果 -->
-    <block wx:elif="{{isSearching}}">
+    <view wx:if="{{isSearching}}">
       <view wx:if="{{searchResults.length > 0}}">
         <view class="search-result-count">找到 {{searchResults.length}} 个相关商品</view>
         <view class="product-list">
@@ -81,12 +76,7 @@
             <view class="product-info">
               <text class="product-name">{{item.name}}</text>
               <text class="product-price">¥{{item.price}}</text>
-              <view class="match-tag" wx:if="{{item.matchType}}">
-                <text class="match-type {{item.matchType}}">{{item.matchType === 'exact' ? '精确匹配' : 
-                  item.matchType === 'name' ? '名称匹配' : 
-                  item.matchType === 'tag' ? '标签匹配' : 
-                  item.matchType === 'description' ? '描述匹配' : '分类匹配'}}</text>
-              </view>
+              <text wx:if="{{item.douyinLink && item.douyinLink !== '' && item.douyinLink !== null}}" class="jump-tag">抖音选购</text>
             </view>
           </view>
         </view>
@@ -96,23 +86,25 @@
         <text>未找到相关商品</text>
         <text class="no-result-tip">换个关键词试试吧</text>
       </view>
-    </block>
+    </view>
 
-    <!-- 普通商品列表 -->
-    <block wx:else>
+    <view wx:else>
       <view class="product-list">
-      <view class="product-item" 
-            wx:for="{{products}}" 
-            wx:key="id" 
-            bindtap="navigateToDetail" 
-            data-id="{{item.id}}">
-        <image src="{{item.image}}" mode="aspectFill"></image>
-        <view class="product-info">
-          <text class="product-name">{{item.name}}</text>
-          <text class="product-price">¥{{item.price}}</text>
+        <view class="product-item" 
+              wx:for="{{products}}" 
+              wx:key="id" 
+              bindtap="navigateToDetail" 
+              data-id="{{item.id}}"
+              data-douyinlink="{{item.douyinLink}}"
+              >
+          <image src="{{item.image}}" mode="aspectFill"></image>
+          <view class="product-info">
+            <text class="product-name">{{item.name}}</text>
+            <text class="product-price">¥{{item.price}}</text>
+            <text wx:if="{{item.douyinLink && item.douyinLink !== '' && item.douyinLink !== null}}" class="jump-tag">抖音选购</text>
           </view>
         </view>
       </view>
-    </block>
+    </view>
   </view>
-</view> 
+</view>
