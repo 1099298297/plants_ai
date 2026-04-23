@@ -7,6 +7,7 @@
            value="{{searchValue}}"
            bindinput="onSearchInput"
            bindfocus="onSearchFocus"
+           bindconfirm="onSearchConfirm"
            confirm-type="search"/>
     <image wx:if="{{searchValue}}" 
            class="clear-icon" 
