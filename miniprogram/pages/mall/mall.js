@@ -79,7 +79,10 @@ Page({
 
       // 搜索
       if (searchValue && isSearching) {
-        const reg = db.RegExp({ regexp: searchValue, options: 'i' });
+        const reg = db.RegExp({
+          regexp: `^.*${searchValue}.*`,
+          options: 'i'
+        });
         whereCond.name = reg;
       }
 
@@ -95,7 +98,6 @@ Page({
         products: loadMore ? [...this.data.products, ...newData] : newData,
         hasMore: newData.length === pageSize,
       });
-
     } catch (err) {
       console.error(err);
     } finally {
@@ -141,6 +143,17 @@ Page({
         suggestions: []
       });
       this.refreshAllData();
+    }
+  },
+
+  onSearchFocus() {
+    const val = this.data.searchValue.trim();
+    // 没输入内容 → 显示历史
+    if (!val) {
+      this.setData({
+        showSuggestions: true,
+        suggestions: []
+      })
     }
   },
 

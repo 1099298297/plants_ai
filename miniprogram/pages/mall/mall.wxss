@@ -225,13 +225,12 @@
   font-size: 32rpx;
   color: #e64340;
   font-weight: bold;
-  vertical-align: middle;
 }
 
 .jump-tag {
   display: inline-block;
   font-size: 20rpx;
-  padding: 6rpx 7rpx;
+  padding: 2rpx 7rpx;
   line-height: 1.2;
   background: #ffffff;
   color: #e64340;
