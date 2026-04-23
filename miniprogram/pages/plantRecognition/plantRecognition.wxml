@@ -1,0 +1,70 @@
+<view class="container">
+  <view class="header">
+    <text class="title">植物识别</text>
+  </view>
+
+  <!-- 图片预览区域 -->
+  <view class="image-container">
+    <image wx:if="{{tempImagePath}}" src="{{tempImagePath}}" mode="aspectFit" class="preview-image"></image>
+    <view wx:else class="placeholder">
+      <text>请上传植物图片</text>
+    </view>
+  </view>
+
+  <!-- 操作按钮区域 -->
+  <view class="button-group">
+    <button class="btn" bindtap="chooseImage" type="primary">
+      <text class="btn-text">拍照/上传图片</text>
+    </button>
+    <button class="btn" bindtap="recognizePlant" type="primary" disabled="{{!tempImagePath}}">
+      <text class="btn-text">识别植物</text>
+    </button>
+  </view>
+
+  <!-- 识别结果区域 -->
+  <view class="result-container" wx:if="{{recognitionResult}}">
+    <view class="result-header">
+      <text class="result-title">识别结果</text>
+    </view>
+    <view class="result-content">
+      <text class="result-text">{{recognitionResult}}</text>
+    </view>
+  </view>
+
+  <!-- ================= 新增：一键添加植物按钮 ================= -->
+  <view class="add-btn-wrapper" wx:if="{{recognitionResult}}">
+    <button class="add-plant-btn" bindtap="goToAddPlant">一键添加植物</button>
+  </view>
+  <!-- ======================================================== -->
+
+  <!-- 商品推荐区域 -->
+  <view class="product-recommendation" wx:if="{{recognitionResult}}">
+    <view class="recommendation-header" bindtap="toggleRecommendation">
+      <text class="recommendation-title">相关商品推荐</text>
+      <view class="toggle-icon {{isRecommendationExpanded ? 'expanded' : ''}}">
+        <text class="arrow">▼</text>
+      </view>
+    </view>
+    
+    <view class="recommendation-content {{isRecommendationExpanded ? 'expanded' : ''}}">
+      <view class="product-list">
+        <view class="product-item" wx:for="{{recommendedProducts}}" wx:key="id" bindtap="navigateToProduct" data-id="{{item.id}}">
+          <image src="{{item.image}}" mode="aspectFill" class="product-image"></image>
+          <view class="product-info">
+            <text class="product-name">{{item.name}}</text>
+            <text class="product-price">¥{{item.price}}</text>
+          </view>
+        </view>
+      </view>
+      
+      <view class="view-more" bindtap="viewRelatedProducts">
+        <text>查看更多商品</text>
+        <text class="iconfont icon-arrow-right"></text>
+      </view>
+    </view>
+  </view>
+
+  <view class="loading" wx:if="{{isLoading}}">
+    <view class="loading-text">正在识别中...</view>
+  </view>
+</view>

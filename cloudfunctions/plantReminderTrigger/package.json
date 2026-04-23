@@ -1,0 +1,9 @@
+{
+  "name": "plantReminderTrigger",
+  "version": "1.0.0",
+  "description": "植物养护提醒定时触发器",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+} 

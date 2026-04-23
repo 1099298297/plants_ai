@@ -1,0 +1,49 @@
+<view class="container">
+  <view class="order-header">
+    <text class="title">我的订单</text>
+  </view>
+
+  <!-- 订单列表 -->
+  <view class="order-list" wx:if="{{orders.length > 0}}">
+    <view class="order-item" wx:for="{{orders}}" wx:key="id">
+      <view class="order-header">
+        <text class="order-id">订单号：{{item.id}}</text>
+        <text class="order-status {{item.status}}">{{statusText[item.status]}}</text>
+      </view>
+
+      <view class="order-products">
+        <view class="product-item" wx:for="{{item.items}}" wx:for-item="product" wx:key="id">
+          <image class="product-image" src="{{product.image}}" mode="aspectFill"></image>
+          <view class="product-info">
+            <text class="product-name">{{product.name}}</text>
+            <text class="product-price">¥{{product.price}}</text>
+            <text class="product-quantity">x{{product.quantity}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="order-footer">
+        <text class="order-time">{{item.createTime}}</text>
+        <text class="order-total">合计：¥{{item.totalPrice}}</text>
+        <view class="order-actions">
+          <button class="action-btn" wx:if="{{item.status === 'pending'}}" bindtap="payOrder" data-id="{{item.id}}">
+            去支付
+          </button>
+          <button class="action-btn" wx:if="{{item.status === 'shipped'}}" bindtap="confirmReceive" data-id="{{item.id}}">
+            确认收货
+          </button>
+          <button class="action-btn" wx:if="{{item.status === 'completed'}}" bindtap="writeReview" data-id="{{item.id}}">
+            评价
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空订单提示 -->
+  <view class="empty-order" wx:else>
+    <image src="/images/icons/empty-order.png" mode="aspectFit"></image>
+    <text>暂无订单</text>
+    <navigator url="/pages/mall/mall" class="go-shopping">去购物</navigator>
+  </view>
+</view> 

@@ -1,0 +1,103 @@
+<view class="home-page">
+  <!-- 1. 顶部纯净的绿色渐变区 -->
+  <view class="top-banner">
+    <view class="banner-text">
+      <text class="title">藤丰园林</text>
+      <text class="subtitle">植物养护智能助手</text>
+    </view>
+  </view>
+
+  <!-- 2. 主体内容区 -->
+  <view class="main-content">
+    
+    <!-- 金刚区：两个核心功能按钮 -->
+    <view class="action-row">
+      <view class="action-btn" bindtap="navigateToPlantRecognition">
+        <view class="icon-box">
+          <image class="action-icon" src="/images/tabbar/recognition.png"></image>
+        </view>
+        <text class="action-text">植物识别</text>
+      </view>
+      
+      <view class="action-btn" bindtap="navigateToVoiceChat">
+        <view class="icon-box">
+          <image class="action-icon" src="/images/tabbar/chat.png"></image>
+        </view>
+        <text class="action-text">智能对话</text>
+      </view>
+    </view>
+
+    <!-- 3. 最近识别区 -->
+    <view class="history-section">
+      <view class="section-title-box">
+        <view class="vertical-line"></view>
+        <text class="section-title-text">最近识别</text>
+      </view>
+      
+      <!-- ================= 核心修改：三层状态判断 ================= -->
+      
+      <!-- 状态一：未登录，显示提示卡片 -->
+      <!-- <view class="data-card login-prompt-card" wx:if="{{!isLoggedIn}}">
+        <view class="empty-box">
+          <text class="empty-text" style="color:#666; margin-bottom: 20rpx;">需要登陆才能存储和查看最近记录哦</text>
+          <button class="login-button" bindtap="goToLogin">去登录</button>
+        </view>
+      </view> -->
+      <view class="data-card login-prompt-card" wx:if="{{!isLoggedIn}}">
+        <view class="empty-box">
+          <!-- 1. 删除了原有的 style 内联样式，让刚才写的 wxss 样式生效 -->
+          <text class="empty-text">需要登陆才能存储和查看最近记录哦</text>
+          
+          <!-- 2. 文字改回了图一的“一键登录”，并加上了 type="primary" 确保获得微信官方纯正的绿色 -->
+          <button class="login-button" type="primary" bindtap="goToLogin">去登录</button>
+        </view>
+      </view>
+
+      <!-- 状态二：已登录，但判断逻辑进入 wx:else -->
+      <block wx:else>
+        
+        <!-- 子状态：已登录，但是还没有识别记录，显示空状态 -->
+        <view class="data-card empty-card" wx:if="{{historyList.length === 0}}">
+          <view class="empty-box">
+            <image class="empty-img" src="/images/tabbar/recognition.png"></image>
+            <text class="empty-text">暂无识别记录，快去探索吧~</text>
+          </view>
+        </view>
+
+        <!-- 子状态：已登录，且有记录，渲染列表 -->
+        <block wx:else>
+          <!-- 每个识别记录卡片 -->
+          <view class="data-card" wx:for="{{historyList}}" wx:key="id">
+            
+            <!-- 头部：左图，中文字，右箭头 (点击整行触发展开/收起) -->
+            <view class="card-header" bindtap="toggleDetails" data-index="{{index}}">
+              <image class="plant-thumb" src="{{item.image}}" mode="aspectFill"></image>
+              
+              <view class="basic-info">
+                <text class="plant-name">{{item.basicInfo.name}}</text>
+                <text class="plant-family">{{item.basicInfo.family}}</text>
+              </view>
+              
+              <!-- 下拉箭头 -->
+              <view class="arrow-wrap">
+                <view class="arrow {{item.isExpanded ? 'arrow-up' : 'arrow-down'}}"></view>
+              </view>
+            </view>
+
+            <!-- 详情部分：展开时才显示 -->
+            <view class="card-body" wx:if="{{item.isExpanded}}">
+              <view class="detail-block" wx:for="{{item.details}}" wx:for-item="detail" wx:key="title">
+                <view class="detail-title">{{detail.title}}：</view>
+                <text class="detail-content">{{detail.content}}</text>
+              </view>
+            </view>
+            
+          </view>
+        </block>
+        
+      </block>
+      <!-- ================= 状态判断结束 ================= -->
+
+    </view>
+  </view>
+</view>

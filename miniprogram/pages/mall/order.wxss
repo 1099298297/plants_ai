@@ -1,0 +1,171 @@
+.container {
+  padding: 20rpx;
+  background-color: #f8f8f8;
+  min-height: 100vh;
+}
+
+.order-header {
+  padding: 20rpx 0;
+  text-align: center;
+  background-color: #fff;
+  margin-bottom: 20rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.order-list {
+  background-color: #fff;
+  border-radius: 12rpx;
+}
+
+.order-item {
+  padding: 20rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.order-item:last-child {
+  border-bottom: none;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20rpx;
+}
+
+.order-id {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.order-status {
+  font-size: 24rpx;
+}
+
+.order-status.pending {
+  color: #ff4d4f;
+}
+
+.order-status.paid {
+  color: #1890ff;
+}
+
+.order-status.shipped {
+  color: #52c41a;
+}
+
+.order-status.completed {
+  color: #999;
+}
+
+.order-products {
+  background-color: #f8f8f8;
+  border-radius: 8rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.product-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.product-item:last-child {
+  margin-bottom: 0;
+}
+
+.product-image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 8rpx;
+  margin-right: 20rpx;
+}
+
+.product-info {
+  flex: 1;
+}
+
+.product-name {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.product-price {
+  font-size: 28rpx;
+  color: #ff4d4f;
+  margin-right: 20rpx;
+}
+
+.product-quantity {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.order-total {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.order-actions {
+  display: flex;
+  gap: 20rpx;
+}
+
+.action-btn {
+  font-size: 24rpx;
+  padding: 10rpx 30rpx;
+  border-radius: 30rpx;
+  background-color: #07c160;
+  color: #fff;
+  border: none;
+}
+
+.empty-order {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100rpx 0;
+}
+
+.empty-order image {
+  width: 200rpx;
+  height: 200rpx;
+  margin-bottom: 30rpx;
+}
+
+.empty-order text {
+  color: #999;
+  font-size: 28rpx;
+  margin-bottom: 30rpx;
+}
+
+.go-shopping {
+  padding: 20rpx 60rpx;
+  background-color: #07c160;
+  color: #fff;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+} 

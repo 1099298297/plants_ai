@@ -1,0 +1,108 @@
+.container {
+  min-height: 100vh;
+  background-color: #f8f8f8;
+}
+
+/* ================= 顶部用户信息区域 ================= */
+.user-info {
+  background-color: #07c160;
+  padding: 60rpx 40rpx;
+  display: flex;
+  align-items: center;
+  color: #fff;
+}
+
+/* 官方规范：包裹头像的透明按钮 (完美修复椭圆问题) */
+.avatar-wrapper {
+  flex-shrink: 0; /* 【关键】严禁被右侧文字挤压变形 */
+  padding: 0;
+  margin: 0;
+  width: 130rpx !important; /* 强制绝对宽度 */
+  height: 130rpx !important; /* 强制绝对高度 */
+  background-color: transparent;
+  border-radius: 50%;
+  margin-right: 30rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.4);
+  box-sizing: border-box; /* 保证边框不影响整体尺寸 */
+  overflow: hidden; /* 切掉多余的边角 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.avatar-wrapper::after {
+  border: none;
+}
+
+/* 头像图片本身 */
+.avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #eee;
+  display: block;
+}
+
+/* 右侧文字容器 */
+.user-detail {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden; /* 防止文字过长顶破布局 */
+}
+
+/* 未登录时的名字显示 */
+.nickname {
+  font-size: 40rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+  display: block;
+}
+
+/* 微信专属昵称输入框 */
+.nickname-input {
+  width: 100%; /* 占满剩余空间，防止点击范围过小 */
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #ffffff; 
+  height: 60rpx;
+  min-height: 60rpx;
+  line-height: 60rpx;
+  margin-bottom: 8rpx;
+}
+
+/* 同步提示小字 */
+.edit-tip {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+  display: block;
+}
+
+/* 未登录时的登录按钮 */
+.login-btn {
+  background-color: #ffffff;
+  color: #07c160;
+  font-size: 28rpx;
+  padding: 0 40rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  border-radius: 30rpx;
+  margin: 0;
+  margin-top: 10rpx;
+  display: inline-block;
+}
+.login-btn::after {
+  border: none;
+}
+/* ================================================== */
+
+/* 以下代码保持不变 */
+.menu-list { padding: 20rpx; }
+.menu-group { background-color: #fff; border-radius: 12rpx; margin-bottom: 20rpx; overflow: hidden; }
+.menu-item { display: flex; align-items: center; padding: 30rpx; border-bottom: 1rpx solid #f5f5f5; }
+.menu-item:last-child { border-bottom: none; }
+.menu-icon { width: 40rpx; height: 40rpx; margin-right: 20rpx; }
+.menu-text { flex: 1; font-size: 28rpx; color: #333; }
+.menu-arrow { color: #999; font-size: 28rpx; }
+.version-info { text-align: center; padding: 40rpx 0; }
+.version-info text { font-size: 24rpx; color: #999; }

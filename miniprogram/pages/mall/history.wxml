@@ -1,0 +1,36 @@
+<!--pages/mall/history.wxml-->
+<view class="container">
+  <view class="history-header">
+    <text class="title">浏览历史</text>
+    <view class="clear-btn" bindtap="clearHistory" wx:if="{{historyList.length > 0}}">
+      <image src="/images/icons/delete.png" mode="aspectFit"></image>
+      <text>清空</text>
+    </view>
+  </view>
+
+  <!-- 历史记录列表 -->
+  <view class="history-list" wx:if="{{historyList.length > 0}}">
+    <view class="history-item" 
+          wx:for="{{historyList}}" 
+          wx:key="id"
+          bindtap="navigateToDetail"
+          data-id="{{item.id}}">
+      <image class="product-image" src="{{item.image}}" mode="aspectFill"></image>
+      <view class="product-info">
+        <text class="product-name">{{item.name}}</text>
+        <text class="product-price">¥{{item.price}}</text>
+        <text class="browse-time">{{item.browseTime}}</text>
+      </view>
+      <view class="remove-btn" catchtap="removeHistory" data-id="{{item.id}}">
+        <image src="/images/icons/delete.png" mode="aspectFit" class="delete-icon"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空历史提示 -->
+  <view class="empty-history" wx:else>
+    <image src="/images/icons/empty-history.png" mode="aspectFit"></image>
+    <text>暂无浏览记录</text>
+    <navigator url="/pages/mall/mall" class="go-shopping">去逛逛</navigator>
+  </view>
+</view>

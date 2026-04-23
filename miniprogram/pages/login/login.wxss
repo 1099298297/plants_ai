@@ -1,0 +1,117 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  background-color: #f8f8f8;
+  padding-top: 100rpx;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 80rpx;
+}
+
+.title {
+  font-size: 44rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.subtitle {
+  font-size: 28rpx;
+  color: #888;
+  margin-top: 10rpx;
+}
+
+.auth-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ================= 核心修复：防止头像变成椭圆 ================= */
+.avatar-wrapper {
+  position: relative;
+  padding: 0;
+  width: 160rpx !important; /* 强制固定的宽度 */
+  height: 160rpx !important; /* 强制固定的高度 */
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.1);
+  flex-shrink: 0; /* 核心：防止在 flex 布局中被挤压变形 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.avatar-wrapper::after { border: none; }
+
+.avatar {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  display: block; /* 清除图片默认下边距 */
+}
+/* ========================================================== */
+
+.edit-icon {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  border-radius: 50%;
+  width: 40rpx;
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  box-shadow: 0 2rpx 4rpx rgba(0,0,0,0.2);
+}
+
+.tip {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 20rpx;
+  margin-bottom: 60rpx;
+}
+
+.nickname-box {
+  display: flex;
+  align-items: center;
+  width: 80%;
+  background: #fff;
+  padding: 20rpx 30rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.05);
+}
+
+.label {
+  font-size: 30rpx;
+  color: #333;
+  margin-right: 30rpx;
+  font-weight: bold;
+}
+
+.nickname-input {
+  flex: 1;
+  font-size: 30rpx;
+}
+
+.login-btn {
+  width: 80% !important;
+  border-radius: 50rpx;
+  background-color: #07c160;
+  color: white;
+  font-size: 32rpx;
+  padding: 24rpx 0;
+  margin-top: 80rpx;
+}
+
+.cancel-text {
+  font-size: 28rpx;
+  color: #999;
+  margin-top: 40rpx;
+}

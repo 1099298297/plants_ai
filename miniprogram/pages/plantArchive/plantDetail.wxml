@@ -1,0 +1,215 @@
+<view class="container">
+  <view class="plant-header">
+    <image class="plant-image" src="{{plant.tempImageUrl || '/images/empty.png'}}" mode="aspectFill"></image>
+    <view class="plant-info">
+      <text class="plant-name">{{plant.nickname || '我的植物'}}</text>
+      <text class="plant-species">{{plant.species || '未知品种'}}</text>
+      <view class="plant-status">
+        <text class="status-text">健康状态：{{plant.healthStatus || '良好'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="tab-bar">
+    <view class="tab-item {{activeTab === 'info' ? 'active' : ''}}" bindtap="switchTab" data-tab="info">
+      <text>基本信息</text>
+    </view>
+    <view class="tab-item {{activeTab === 'reminder' ? 'active' : ''}}" bindtap="switchTab" data-tab="reminder">
+      <text>养护提醒</text>
+    </view>
+  </view>
+
+  <view class="content">
+    <view class="info-content" wx:if="{{activeTab === 'info'}}">
+      <view class="info-section">
+        <text class="section-title">植物详情</text>
+        <view class="info-item">
+          <text class="label">品种：</text>
+          <text class="value">{{plant.species || '未知'}}</text>
+        </view>
+        <!-- 新增：展示植物地址 -->
+        <view class="info-item">
+          <text class="label">植物地址：</text>
+          <text class="value">{{plant.location || '无'}}</text>
+        </view>
+        <view class="info-item">
+          <text class="label">种植时间：</text>
+          <text class="value">{{plant.plantDate || '未知'}}</text>
+        </view>
+        <view class="info-item">
+          <text class="label">养护难度：</text>
+          <text class="value">{{plant.difficulty || '中等'}}</text>
+        </view>
+        <view class="info-item">
+          <text class="label">备注：</text>
+          <text class="value">{{plant.notes || '无'}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="reminder-content" wx:if="{{activeTab === 'reminder'}}">
+      <!-- 提醒统计 -->
+      <view class="reminder-stats" wx:if="{{reminderStats.total > 0}}">
+        <view class="stats-title">提醒统计</view>
+        <view class="stats-grid">
+          <view class="stats-item">
+            <text class="stats-number">{{reminderStats.total}}</text>
+            <text class="stats-label">总提醒</text>
+          </view>
+          <view class="stats-item">
+            <text class="stats-number">{{reminderStats.active}}</text>
+            <text class="stats-label">已启用</text>
+          </view>
+          <view class="stats-item">
+            <text class="stats-number">{{reminderStats.inactive}}</text>
+            <text class="stats-label">已停用</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 即将到来的提醒 -->
+      <view class="upcoming-reminders" wx:if="{{upcomingReminders.length > 0}}">
+        <view class="section-title">
+          <text class="title-icon">⏰</text>
+          <text>即将到来的提醒</text>
+        </view>
+        <view class="upcoming-list">
+          <view class="upcoming-item" wx:for="{{upcomingReminders}}" wx:key="id">
+            <view class="upcoming-info">
+              <text class="upcoming-type">{{item.type}}</text>
+              <text class="upcoming-time">{{item.nextReminderTime}}</text>
+            </view>
+            <text class="upcoming-desc">{{item.description}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 提醒列表 -->
+      <view class="reminder-list">
+        <view class="section-title">
+          <text class="title-icon">📋</text>
+          <text>养护提醒列表</text>
+          <text class="reminder-count">({{reminders.length}})</text>
+        </view>
+        
+        <view class="reminder-item" wx:for="{{reminders}}" wx:key="_id">
+          <view class="reminder-header">
+            <view class="reminder-left">
+              <text class="reminder-type">{{item.type}}</text>
+              <view class="reminder-status">
+                <text class="reminder-frequency">{{item.frequency}}</text>
+                <text class="reminder-time">{{item.reminderTime}}</text>
+              </view>
+            </view>
+            <view class="reminder-right">
+              <switch class="reminder-switch" checked="{{item.isActive}}" bindchange="toggleReminderStatus" data-id="{{item._id}}" color="#4CAF50"/>
+            </view>
+          </view>
+          <view class="reminder-desc">{{item.description}}</view>
+          <view class="reminder-info" wx:if="{{item.nextReminderTime}}">
+            <text class="next-reminder">下次提醒：{{item.nextReminderTime}}</text>
+            <text class="reminder-status-text {{item.isActive ? 'active' : 'inactive'}}">
+              {{item.isActive ? '已启用' : '已停用'}}
+            </text>
+          </view>
+          <view class="reminder-actions">
+            <button class="action-btn edit" bindtap="editReminder" data-id="{{item._id}}">编辑</button>
+            <button class="action-btn delete" bindtap="deleteReminder" data-id="{{item._id}}">删除</button>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{reminders.length === 0}}">
+        <image class="empty-icon" src="/images/empty.png" mode="aspectFit"></image>
+        <text class="empty-text">还没有养护提醒</text>
+        <text class="empty-desc">为植物添加养护提醒，及时照顾它们</text>
+      </view>
+      
+      <!-- 操作按钮 -->
+      <view class="action-buttons">
+        <button class="add-reminder" bindtap="showAddReminder">
+          <text class="add-icon">+</text>
+          <text>添加养护提醒</text>
+        </button>
+        <button class="batch-create" bindtap="createBasicReminders" wx:if="{{reminders.length === 0}}">
+          <text class="batch-icon">📋</text>
+          <text>批量创建基础提醒</text>
+        </button>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 添加/编辑提醒弹窗 -->
+<view class="modal" wx:if="{{showReminderModal}}">
+  <view class="modal-mask" bindtap="hideReminderModal"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <text>{{editingReminder ? '编辑养护提醒' : '创建养护提醒'}}</text>
+    </view>
+    <view class="modal-body">
+      <view class="reminder-title">请选择养护事项</view>
+      <view class="reminder-grid">
+        <view class="reminder-grid-title">基本事项</view>
+        <view class="reminder-grid-list">
+          <view class="reminder-grid-item {{typeIndex === idx ? 'selected' : ''}}" wx:for="{{basicReminders}}" wx:for-index="idx" wx:key="type" bindtap="onSelectType" data-idx="{{idx}}">
+            <image class="reminder-icon" src="{{item.icon}}" mode="aspectFit"></image>
+            <text class="reminder-label">{{item.label}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="reminder-custom">
+        <view class="reminder-grid-title">自定义事项</view>
+        <view class="reminder-custom-btn" bindtap="onCustomType">
+          <text class="custom-plus">+</text>
+          <text class="custom-label">创建</text>
+        </view>
+      </view>
+      
+      <view class="form-item">
+        <text class="label">提醒频率</text>
+        <picker class="picker" mode="selector" range="{{frequencyOptions}}" range-key="label" value="{{frequencyIndex}}" bindchange="onFrequencyChange">
+          <view class="picker-text">{{frequency || '请选择频率'}}</view>
+        </picker>
+      </view>
+      
+      <!-- 每周选择星期几 -->
+      <view class="form-item" wx:if="{{frequencyOptions[frequencyIndex].value === 'weekly'}}">
+        <text class="label">每周几提醒</text>
+        <picker class="picker" mode="selector" range="{{weekDays}}" value="{{selectedWeekDay}}" bindchange="onWeekDayChange">
+          <view class="picker-text">{{weekDays[selectedWeekDay]}}</view>
+        </picker>
+      </view>
+      
+      <!-- 自定义间隔天数 -->
+      <view class="form-item" wx:if="{{frequencyOptions[frequencyIndex].value === 'custom'}}">
+        <text class="label">间隔天数</text>
+        <input class="input" type="number" min="1" value="{{customIntervalDays}}" bindinput="onCustomIntervalInput" placeholder="请输入天数" />
+      </view>
+      
+      <view class="form-item">
+        <text class="label">提醒时间</text>
+        <picker class="picker" mode="selector" range="{{reminderTimeOptions}}" value="{{reminderTimeIndex}}" bindchange="onTimeChange">
+          <view class="picker-text">{{reminderTimeOptions[reminderTimeIndex]}}</view>
+        </picker>
+      </view>
+      
+      <view class="form-item">
+        <text class="label">提醒描述</text>
+        <textarea class="textarea" placeholder="请输入提醒描述" value="{{description}}" bindinput="onDescriptionInput"/>
+      </view>
+    </view>
+    <view class="modal-footer">
+      <button class="btn cancel" bindtap="hideReminderModal">取消</button>
+      <button class="btn confirm" bindtap="saveReminder">确认</button>
+    </view>
+  </view>
+</view>
+
+<view wx:if="{{showSubscribeModal}}" class="subscribe-modal">
+  <view class="modal-content">
+    <text>是否允许订阅养护提醒？</text>
+    <button class="subscribe-btn" bindtap="onTapSubscribe">允许订阅提醒</button>
+  </view>
+</view>

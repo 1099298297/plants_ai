@@ -1,0 +1,33 @@
+<view class="container">
+  <swiper class="product-swiper" indicator-dots="true" autoplay="true" interval="3000" duration="500">
+    <swiper-item wx:for="{{product.images}}" wx:key="*this">
+      <image src="{{item}}" mode="aspectFill" class="slide-image"></image>
+    </swiper-item>
+  </swiper>
+
+  <view class="product-info">
+    <view class="product-name">{{product.name}}</view>
+    <view class="product-price">¥{{product.price}}</view>
+    <view class="product-description">{{product.description}}</view>
+  </view>
+
+  <view class="product-details">
+    <view class="section-title">商品详情</view>
+    <view class="detail-item" wx:for="{{product.details}}" wx:key="label">
+      <text class="label">{{item.label}}</text>
+      <text class="value">{{item.value}}</text>
+    </view>
+  </view>
+
+  <view class="action-bar">
+    <view class="action-item" bindtap="toggleFavorite">
+      <image src="{{isFavorite ? '/images/icons/heart-filled.png' : '/images/icons/heart.png'}}" mode="aspectFit"></image>
+      <text>收藏</text>
+    </view>
+    <view class="action-item" bindtap="addToCart">
+      <image src="/images/icons/cart.png" mode="aspectFit"></image>
+      <text>加入购物车</text>
+    </view>
+    <button class="buy-now" bindtap="buyNow">立即购买</button>
+  </view>
+</view> 

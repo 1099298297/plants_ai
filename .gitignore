@@ -1,0 +1,44 @@
+# 微信开发者工具自动生成
+project.config.json
+project.private.config.json
+settings.json
+
+# 编译/缓存
+*.log
+logs/
+*.tmp
+temp/
+tmp/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 云开发（如果你用微信云函数）
+cloudfunctions/**/node_modules
+cloudfunctions/**/.env
+cloudfunctions/**/.local
+cloudfunctions/**/.cloudlocal
+
+# 小程序打包
+dist/
+build/
+miniprogram_dist/
+
+# 依赖（如果以后装 npm 包）
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# 环境变量
+.env
+.env.local
+.env.*.local
+
+# 编辑器配置
+.idea/
+.vscode/
+*.swp
+*.swo
+*~

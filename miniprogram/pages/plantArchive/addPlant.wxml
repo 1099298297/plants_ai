@@ -1,0 +1,87 @@
+<!-- <view class="container">
+  <view class="form-group">
+    <view class="form-item">
+      <text class="label">植物图片</text>
+      <view class="image-upload" bindtap="chooseImage">
+        <image wx:if="{{tempImagePath}}" src="{{tempImagePath}}" mode="aspectFill"></image>
+        <view wx:else class="upload-placeholder">
+          <text class="upload-icon">+</text>
+          <text>点击上传图片</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <text class="label">植物昵称</text>
+      <input class="input" placeholder="请输入植物昵称" value="{{nickname}}" bindinput="onNicknameInput"/>
+    </view>
+
+    <view class="form-item">
+      <text class="label">品种名称</text>
+      <input class="input" placeholder="请输入品种名称" value="{{species}}" bindinput="onSpeciesInput"/>
+    </view>
+
+    <view class="form-item">
+      <text class="label">种植日期</text>
+      <picker mode="date" value="{{plantDate}}" bindchange="onDateChange">
+        <view class="picker">
+          {{plantDate || '请选择种植日期'}}
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="btn-group">
+    <button class="btn cancel" bindtap="onCancel">取消</button>
+    <button class="btn confirm" bindtap="onConfirm">确认添加</button>
+  </view>
+</view>  -->
+<view class="container">
+  <view class="form-group">
+    <view class="form-item">
+      <text class="label">植物图片</text>
+      <view class="image-upload" bindtap="chooseImage">
+        <image wx:if="{{tempImagePath}}" src="{{tempImagePath}}" mode="aspectFill"></image>
+        <view wx:else class="upload-placeholder">
+          <text class="upload-icon">+</text>
+          <text>点击上传图片</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <text class="label">植物昵称</text>
+      <input class="input" placeholder="请输入植物昵称" value="{{nickname}}" bindinput="onNicknameInput"/>
+    </view>
+
+    <view class="form-item">
+      <text class="label">品种名称</text>
+      <input class="input" placeholder="请输入品种名称" value="{{species}}" bindinput="onSpeciesInput"/>
+    </view>
+
+    <!-- 新增：植物地址输入框 -->
+    <view class="form-item">
+      <text class="label">植物地址</text>
+      <input class="input" placeholder="请输入植物地址" value="{{location}}" bindinput="onLocationInput"/>
+    </view>
+
+    <view class="form-item">
+      <text class="label">种植日期</text>
+      <picker mode="date" value="{{plantDate}}" bindchange="onDateChange">
+        <view class="picker">
+          {{plantDate || '请选择种植日期'}}
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- <view class="btn-group">
+    <button class="btn cancel" bindtap="onCancel">取消</button>
+    <button class="btn confirm" bindtap="onConfirm">确认添加</button>
+  </view> -->
+  <!-- 底部按钮区域 -->
+  <view class="footer-btns">
+    <view class="cancel-btn" bindtap="onCancel">取消</view>
+    <button class="confirm-btn" type="primary" bindtap="onConfirm">确认添加</button>
+  </view>
+</view>

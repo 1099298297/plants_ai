@@ -1,0 +1,33 @@
+<view class="container">
+  <view class="header">
+    <view class="title">欢迎使用</view>
+    <view class="subtitle">藤丰园林智能助手</view>
+  </view>
+
+  <view class="auth-section">
+    <!-- 获取头像：必须使用 button open-type="chooseAvatar" -->
+    <button class="avatar-wrapper" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+      <image class="avatar" src="{{avatarUrl || defaultAvatar}}" mode="aspectFill"></image>
+      <!-- <view class="edit-icon">📷</view> -->
+    </button>
+    <view class="tip">点击上方图片授权头像</view>
+
+    <!-- 获取昵称：必须使用 input type="nickname" -->
+    <view class="nickname-box">
+      <text class="label">昵称</text>
+      <!-- 修复昵称一闪而过：同时绑定 bindchange 和 bindblur -->
+      <input 
+        type="nickname" 
+        class="nickname-input" 
+        placeholder="点击授权微信昵称" 
+        value="{{nickName}}" 
+        bindchange="onNicknameChange" 
+        bindblur="onNicknameChange"                              
+      />
+    </view>
+  </view>
+
+  <!-- 登录按钮 -->
+  <button class="login-btn" type="primary" bindtap="handleLogin">授权并登录</button>
+  <view class="cancel-text" bindtap="goBack">暂不登录</view>
+</view>

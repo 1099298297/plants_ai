@@ -1,0 +1,33 @@
+<view class="container">
+  <view class="chat-container">
+    <!-- 聊天内容区域 -->
+    <scroll-view scroll-y class="chat-content" scroll-into-view="{{scrollToMessage}}">
+      <view class="chat-list">
+        <block wx:for="{{chatList}}" wx:key="index">
+          <view class="chat-item {{item.type}}" id="msg-{{index}}">
+            <view class="message">{{item.content}}</view>
+          </view>
+        </block>
+      </view>
+    </scroll-view>
+
+    <!-- 输入区域 -->
+    <view class="input-area">
+      <input class="text-input" 
+             type="text" 
+             placeholder="请输入问题" 
+             value="{{inputText}}"
+             bindinput="onInputChange"
+             confirm-type="send"
+             bindconfirm="sendTextMessage"/>
+      <view class="button-group">
+        <button class="send-btn" bindtap="sendTextMessage">发送</button>
+        <button class="voice-btn {{isRecording ? 'recording' : ''}}" 
+                bindtouchstart="startRecord" 
+                bindtouchend="stopRecord">
+          {{isRecording ? '松开结束' : '按住说话'}}
+        </button>
+      </view>
+    </view>
+  </view>
+</view>

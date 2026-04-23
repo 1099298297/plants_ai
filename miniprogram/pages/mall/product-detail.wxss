@@ -1,0 +1,128 @@
+.container {
+  padding-bottom: 100rpx;
+}
+
+.product-swiper {
+  width: 100%;
+  height: 750rpx;
+}
+
+.slide-image {
+  width: 100%;
+  height: 100%;
+}
+
+.product-info {
+  padding: 30rpx;
+  background: #fff;
+}
+
+.product-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+}
+
+.product-price {
+  font-size: 40rpx;
+  color: #e64340;
+  margin-bottom: 20rpx;
+}
+
+.product-description {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+.product-details {
+  margin-top: 20rpx;
+  padding: 30rpx;
+  background: #fff;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 30rpx;
+}
+
+.detail-item {
+  display: flex;
+  margin-bottom: 20rpx;
+}
+
+.detail-item .label {
+  width: 160rpx;
+  color: #666;
+  font-size: 28rpx;
+}
+
+.detail-item .value {
+  flex: 1;
+  font-size: 28rpx;
+}
+
+.action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100rpx;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 30rpx;
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 40rpx;
+}
+
+.action-item image {
+  width: 40rpx;
+  height: 40rpx;
+  margin-bottom: 6rpx;
+}
+
+.action-item text {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.buy-now {
+  flex: 1;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  background: #e64340;
+  color: #fff;
+  border-radius: 40rpx;
+  margin-left: 20rpx;
+  font-size: 32rpx;
+}
+
+.douyin-btn {
+  flex: 1;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  background: #000;
+  color: #fff;
+  border-radius: 40rpx;
+  margin-left: 20rpx;
+  font-size: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.douyin-btn image {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 10rpx;
+} 

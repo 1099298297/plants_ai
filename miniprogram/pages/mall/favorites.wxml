@@ -1,0 +1,32 @@
+<!--pages/mall/favorites.wxml-->
+<view class="container">
+  <view class="favorites-header">
+    <text class="title">我的收藏</text>
+  </view>
+
+  <!-- 收藏商品列表 -->
+  <view class="favorites-list" wx:if="{{favoriteProducts.length > 0}}">
+    <view class="favorite-item" 
+          wx:for="{{favoriteProducts}}" 
+          wx:key="id"
+          bindtap="navigateToDetail"
+          data-id="{{item.id}}">
+      <image class="product-image" src="{{item.image}}" mode="aspectFill"></image>
+      <view class="product-info">
+        <text class="product-name">{{item.name}}</text>
+        <text class="product-price">¥{{item.price}}</text>
+        <text class="product-description">{{item.description}}</text>
+      </view>
+      <view class="remove-btn" catchtap="removeFavorite" data-id="{{item.id}}">
+        <image src="/images/icons/delete.png" mode="aspectFit" class="delete-icon"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空收藏提示 -->
+  <view class="empty-favorites" wx:else>
+    <image src="/images/icons/empty-favorites.png" mode="aspectFit"></image>
+    <text>暂无收藏商品</text>
+    <navigator url="/pages/mall/mall" class="go-shopping">去逛逛</navigator>
+  </view>
+</view>

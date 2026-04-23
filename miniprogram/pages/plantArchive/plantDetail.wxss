@@ -1,0 +1,648 @@
+.container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.plant-header {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  padding: 40rpx 30rpx;
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+.plant-image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 60rpx;
+  margin-right: 30rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+}
+
+.plant-info {
+  flex: 1;
+}
+
+.plant-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.plant-species {
+  font-size: 28rpx;
+  opacity: 0.9;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.plant-status {
+  display: flex;
+  align-items: center;
+}
+
+.status-text {
+  font-size: 24rpx;
+  opacity: 0.8;
+}
+
+.tab-bar {
+  display: flex;
+  background-color: white;
+  border-bottom: 1rpx solid #e0e0e0;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 30rpx 0;
+  font-size: 30rpx;
+  color: #666;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.tab-item.active {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60rpx;
+  height: 4rpx;
+  background-color: #4CAF50;
+  border-radius: 2rpx;
+}
+
+.content {
+  padding: 30rpx;
+}
+
+.info-content {
+  background-color: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+}
+
+.info-section {
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+  display: block;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.value {
+  font-size: 28rpx;
+  color: #333;
+  text-align: right;
+  max-width: 60%;
+}
+
+.subscription-status {
+  background-color: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+}
+
+.status-icon {
+  font-size: 32rpx;
+  margin-right: 15rpx;
+}
+
+.status-text {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.status-item.enabled .status-text {
+  color: #4CAF50;
+}
+
+.status-item.disabled .status-text {
+  color: #f44336;
+}
+
+.subscribe-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 25rpx;
+  padding: 15rpx 30rpx;
+  font-size: 26rpx;
+}
+
+.reminder-stats {
+  background-color: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+}
+
+.stats-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.stats-grid {
+  display: flex;
+  justify-content: space-around;
+}
+
+.stats-item {
+  text-align: center;
+}
+
+.stats-number {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #4CAF50;
+  margin-bottom: 8rpx;
+}
+
+.stats-label {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.upcoming-reminders {
+  background-color: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+}
+
+.upcoming-list {
+  margin-top: 20rpx;
+}
+
+.upcoming-item {
+  padding: 20rpx;
+  background-color: #f8f9fa;
+  border-radius: 12rpx;
+  margin-bottom: 15rpx;
+}
+
+.upcoming-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.upcoming-type {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.upcoming-time {
+  font-size: 24rpx;
+  color: #4CAF50;
+  background-color: rgba(76, 175, 80, 0.1);
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+.upcoming-desc {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+.reminder-list {
+  background-color: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+}
+
+.reminder-count {
+  font-size: 24rpx;
+  color: #999;
+  margin-left: 10rpx;
+}
+
+.reminder-item {
+  border: 1rpx solid #e0e0e0;
+  border-radius: 12rpx;
+  padding: 25rpx;
+  margin-bottom: 20rpx;
+  background-color: #fafafa;
+}
+
+.reminder-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.reminder-left {
+  flex: 1;
+}
+
+.reminder-type {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.reminder-status {
+  display: flex;
+  align-items: center;
+  gap: 15rpx;
+}
+
+.reminder-frequency {
+  font-size: 24rpx;
+  color: #666;
+  background-color: #e0e0e0;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+.reminder-time {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.reminder-right {
+  margin-left: 20rpx;
+}
+
+.reminder-desc {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.4;
+  margin-bottom: 15rpx;
+}
+
+.reminder-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.next-reminder {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.reminder-status-text {
+  font-size: 24rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+.reminder-status-text.active {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: #4CAF50;
+}
+
+.reminder-status-text.inactive {
+  background-color: rgba(158, 158, 158, 0.1);
+  color: #9e9e9e;
+}
+
+/* ========== 修改点 1: 列表卡片操作按钮居中 ========== */
+.reminder-actions {
+  display: flex !important;
+  justify-content: center !important; /* 强制水平居中 */
+  align-items: center !important;     /* 强制垂直居中 */
+  width: 100% !important;             /* 强制父盒子占满宽度 */
+  gap: 40rpx !important;              /* 按钮间距 */
+  padding-top: 15rpx !important;
+}
+
+.action-btn {
+  flex: none !important;              /* 绝对不让 flex 缩放拉扯按钮 */
+  width: 240rpx !important;           /* 固定宽度 */
+  height: 64rpx !important;           
+  line-height: 64rpx !important;      /* 保证文字垂直居中 */
+  margin: 0 !important;               /* 彻底清除原生外边距 */
+  padding: 0 !important;              /* 彻底清除原生内边距 */
+  text-align: center !important;
+  border-radius: 32rpx !important;
+  font-size: 26rpx !important;
+  box-sizing: border-box !important;
+}
+.action-btn::after {
+  display: none !important;
+}
+
+/* =================================================== */
+
+.action-btn.edit {
+  background-color: #2196F3;
+  color: white;
+}
+
+.action-btn.delete {
+  background-color: #f44336;
+  color: white;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 80rpx 30rpx;
+  background-color: white;
+  border-radius: 16rpx;
+  margin-bottom: 30rpx;
+}
+
+.empty-icon {
+  width: 120rpx;
+  height: 120rpx;
+  margin-bottom: 30rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #333;
+  display: block;
+  margin-bottom: 15rpx;
+}
+
+.empty-desc {
+  font-size: 26rpx;
+  color: #999;
+  line-height: 1.4;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.add-reminder, .batch-create {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  border: none;
+}
+
+.add-reminder {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.batch-create {
+  background-color: #2196F3;
+  color: white;
+}
+
+.add-icon, .batch-icon {
+  margin-right: 10rpx;
+  font-size: 32rpx;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+}
+
+.modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border-radius: 24rpx 24rpx 0 0;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  padding: 30rpx;
+  text-align: center;
+  border-bottom: 1rpx solid #e0e0e0;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-body {
+  padding: 30rpx;
+}
+
+/* ========== 修改点 2: 弹窗底部操作按钮居中 ========== */
+.modal-footer {
+  display: flex !important;
+  justify-content: center !important; /* 强制水平居中 */
+  align-items: center !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 40rpx 0 !important;        /* 左右不要留 padding，让内部自由居中 */
+  gap: 50rpx !important;              /* 按钮间距 */
+}
+
+.btn {
+  flex: none !important;              /* 防止被拉伸 */
+  width: 280rpx !important;           /* 固定宽度 */
+  height: 80rpx !important;
+  line-height: 80rpx !important;
+  margin: 0 !important;               /* 彻底清除原生外边距 */
+  padding: 0 !important;              /* 彻底清除原生内边距 */
+  text-align: center !important;
+  border-radius: 40rpx !important;
+  font-size: 30rpx !important;
+  box-sizing: border-box !important;
+}
+/* 强行清除小程序原生按钮的隐形边框 */
+.btn::after {
+  display: none !important;
+}
+/* =================================================== */
+
+.cancel {
+  background-color: #f5f5f5;
+  color: #666;
+}
+
+.subscribe {
+  background-color: #FF9800;
+  color: white;
+}
+
+.confirm {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.reminder-title {
+  text-align: center;
+  font-size: 30rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+}
+
+.reminder-grid {
+  margin-bottom: 20rpx;
+}
+
+.reminder-grid-title {
+  font-size: 26rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.reminder-grid-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30rpx 0;
+}
+
+.reminder-grid-item {
+  width: 33.33%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding: 10rpx 0;
+  cursor: pointer;
+}
+
+.reminder-icon {
+  width: 60rpx;
+  height: 60rpx;
+  margin-bottom: 8rpx;
+}
+
+.reminder-label {
+  font-size: 24rpx;
+  color: #333;
+}
+
+.reminder-grid-item.selected {
+  background: #e6f7ff;
+  border-radius: 16rpx;
+}
+
+.reminder-custom {
+  margin-bottom: 20rpx;
+}
+
+.reminder-custom-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 10rpx;
+  margin-bottom: 10rpx;
+  cursor: pointer;
+}
+
+.custom-plus {
+  font-size: 36rpx;
+  color: #07c160;
+  margin-right: 8rpx;
+}
+
+.custom-label {
+  font-size: 26rpx;
+  color: #07c160;
+}
+
+.form-item {
+  margin-bottom: 30rpx;
+}
+
+.picker {
+  background-color: #f8f9fa;
+  border-radius: 12rpx;
+  padding: 20rpx;
+}
+
+.picker-text {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.textarea {
+  width: 100%;
+  height: 120rpx;
+  background-color: #f8f9fa;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  font-size: 28rpx;
+  color: #333;
+  box-sizing: border-box;
+}
+
+@media (max-width: 750rpx) {
+  .reminder-grid-item {
+    width: 50%;
+  }
+  
+  .stats-grid {
+    flex-direction: column;
+    gap: 20rpx;
+  }
+  
+  .stats-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

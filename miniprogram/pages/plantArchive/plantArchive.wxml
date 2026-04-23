@@ -1,0 +1,37 @@
+<view class="container">
+  <view class="header">
+    <text class="title">植物档案</text>
+    <view class="add-btn" bindtap="onAddPlant">
+      <text class="add-icon">+</text>
+      <text>添加植物</text>
+    </view>
+  </view>
+  
+  <view class="content">
+
+    <!-- ======== 新增：如果未登录，显示去登录提示 ======== -->
+    <view class="unlogin-box" wx:if="{{!isLoggedIn}}" style="display:flex; flex-direction:column; align-items:center; margin-top:150rpx;">
+      <text style="color:#999; margin-bottom:40rpx; font-size:30rpx;">您还未登录，无法查看专属档案</text>
+      <button type="primary" bindtap="goToLogin" style="width: 60%; border-radius: 50rpx;">去登录</button>
+    </view>
+    <!-- =============================================== -->
+
+    <!-- ======== 如果已登录，正常显示植物列表 ======== -->
+    <view class="plant-list" wx:if="{{isLoggedIn}}">
+      <view class="empty-tip" wx:if="{{!plants.length}}">
+        <text>暂无植物档案，快去添加吧</text>
+      </view>
+      <view class="plant-item" wx:for="{{plants}}" wx:key="_id" bindtap="onPlantTap" data-plant="{{item}}">
+        <image class="plant-image" src="{{item.imageUrl}}" mode="aspectFill"></image>
+        <view class="plant-info">
+          <text class="plant-nickname">{{item.nickname}}</text>
+          <text class="plant-species">{{item.species}}</text>
+          <text class="plant-date">种植日期：{{item.plantDate}}</text>
+        </view>
+        <image class="delete-btn" src="/images/icons/delete.png" mode="aspectFit" catchtap="onDeletePlant" data-id="{{item._id}}" />
+      </view>
+    </view>
+    <!-- =========================================== -->
+
+  </view>
+</view>

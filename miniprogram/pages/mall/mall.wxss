@@ -1,0 +1,289 @@
+.container {
+  padding: 20rpx;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+.search-bar {
+  padding: 20rpx 0;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.search-input-wrap {
+  display: flex;
+  align-items: center;
+  background: #f5f5f5;
+  border-radius: 32rpx;
+  padding: 0 20rpx;
+  margin: 0 20rpx;
+}
+
+.search-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 10rpx;
+}
+
+.clear-icon {
+  width: 32rpx;
+  height: 32rpx;
+  padding: 10rpx;
+}
+
+.search-input-wrap input {
+  flex: 1;
+  height: 64rpx;
+  font-size: 28rpx;
+}
+
+/* 搜索建议和历史记录样式 */
+.search-suggestions {
+  background: #fff;
+  border-radius: 0 0 16rpx 16rpx;
+  margin: 0 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 104rpx;
+  left: 0;
+  right: 0;
+  z-index: 99;
+}
+
+.suggestion-list {
+  padding: 20rpx 0;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.suggestion-item:active {
+  background: #f5f5f5;
+}
+
+.suggestion-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 20rpx;
+  opacity: 0.5;
+}
+
+.search-history {
+  padding: 20rpx;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+  font-size: 28rpx;
+  color: #666;
+}
+
+.clear-history {
+  width: 32rpx;
+  height: 32rpx;
+  padding: 10rpx;
+}
+
+.history-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  background: #f5f5f5;
+  padding: 10rpx 20rpx;
+  border-radius: 32rpx;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.history-icon {
+  width: 24rpx;
+  height: 24rpx;
+  margin-right: 10rpx;
+  opacity: 0.5;
+}
+
+.category-list {
+  display: flex;
+  padding: 20rpx 0;
+  background: #fff;
+  margin-bottom: 20rpx;
+}
+
+.category-item {
+  flex: 1;
+  text-align: center;
+  font-size: 28rpx;
+  color: #666;
+  position: relative;
+  padding: 10rpx 0;
+}
+
+.category-item.active {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.category-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40rpx;
+  height: 4rpx;
+  background: #4CAF50;
+  border-radius: 2rpx;
+}
+
+.content-area {
+  position: relative;
+  min-height: 200rpx;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+}
+
+.loading-spinner {
+  width: 40rpx;
+  height: 40rpx;
+  border: 4rpx solid #f3f3f3;
+  border-top: 4rpx solid #4CAF50;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20rpx;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.product-list {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -10rpx;
+}
+
+.product-item {
+  width: calc(50% - 20rpx);
+  margin: 10rpx;
+  background: #fff;
+  border-radius: 12rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.product-item image {
+  width: 100%;
+  height: 345rpx;
+}
+
+.product-info {
+  padding: 20rpx;
+  position: relative;
+}
+
+.product-name {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.product-price {
+  font-size: 32rpx;
+  color: #e64340;
+  font-weight: bold;
+}
+
+.match-tag {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+}
+
+.match-type {
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+  color: #fff;
+}
+
+.match-type.exact {
+  background: #4CAF50;
+}
+
+.match-type.name {
+  background: #2196F3;
+}
+
+.match-type.tag {
+  background: #FF9800;
+}
+
+.match-type.description {
+  background: #9C27B0;
+}
+
+.match-type.category {
+  background: #607D8B;
+}
+
+.search-result-count {
+  width: 100%;
+  padding: 20rpx;
+  font-size: 28rpx;
+  color: #666;
+  background: #fff;
+  margin-bottom: 20rpx;
+}
+
+.no-result {
+  width: 100%;
+  padding: 100rpx 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff;
+  border-radius: 12rpx;
+}
+
+.no-result image {
+  width: 200rpx;
+  height: 200rpx;
+  margin-bottom: 20rpx;
+}
+
+.no-result text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.no-result-tip {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 10rpx;
+} 

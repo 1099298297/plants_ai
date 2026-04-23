@@ -1,0 +1,49 @@
+<view class="container">
+  <view class="cart-header">
+    <text class="title">购物车</text>
+  </view>
+
+  <!-- 购物车列表 -->
+  <view class="cart-list" wx:if="{{cartItems.length > 0}}">
+    <view class="cart-item" wx:for="{{cartItems}}" wx:key="id">
+      <view class="checkbox">
+        <checkbox checked="{{item.selected}}" bindtap="toggleSelect" data-id="{{item.id}}"/>
+      </view>
+      <image class="product-image" src="{{item.image}}" mode="aspectFill"></image>
+      <view class="product-info">
+        <text class="product-name">{{item.name}}</text>
+        <text class="product-price">¥{{item.price}}</text>
+        <view class="quantity-control">
+          <text class="minus" bindtap="decreaseQuantity" data-id="{{item.id}}">-</text>
+          <text class="quantity">{{item.quantity}}</text>
+          <text class="plus" bindtap="increaseQuantity" data-id="{{item.id}}">+</text>
+        </view>
+      </view>
+      <view class="delete-btn" catchtap="removeItem" data-id="{{item.id}}">
+        <image src="/images/icons/delete.png" mode="aspectFit" class="delete-icon"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空购物车提示 -->
+  <view class="empty-cart" wx:else>
+    <image src="/images/icons/empty-cart.png" mode="aspectFit"></image>
+    <text>购物车还是空的</text>
+    <navigator url="/pages/mall/mall" class="go-shopping">去逛逛</navigator>
+  </view>
+
+  <!-- 底部结算栏 -->
+  <view class="checkout-bar" wx:if="{{cartItems.length > 0}}">
+    <view class="select-all">
+      <checkbox checked="{{allSelected}}" bindtap="toggleSelectAll"/>
+      <text>全选</text>
+    </view>
+    <view class="total-info">
+      <text>合计：</text>
+      <text class="total-price">¥{{totalPrice}}</text>
+    </view>
+    <button class="checkout-btn" bindtap="checkout" disabled="{{!hasSelected}}">
+      结算({{selectedCount}})
+    </button>
+  </view>
+</view> 
