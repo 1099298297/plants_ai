@@ -132,40 +132,58 @@ Page({
   },
 
   // 结算
-  checkout() {
+  async checkout() {
     const { cartItems } = this.data;
     const selectedItems = cartItems.filter(item => item.selected);
-    
+
     if (selectedItems.length === 0) {
-      wx.showToast({
-        title: '请选择商品',
-        icon: 'none'
-      });
+      wx.showToast({ title: '请选择商品', icon: 'none' });
       return;
     }
 
-    // 创建订单
-    const order = {
-      id: Date.now().toString(),
-      items: selectedItems,
-      totalPrice: this.data.totalPrice,
-      status: 'pending',
-      createTime: new Date().toISOString()
-    };
+    // 只传 商品ID + 数量
+    const buyItems = selectedItems.map(item => ({
+      productId: item.id,
+      quantity: item.quantity
+    }));
 
-    // 保存订单
-    const orders = wx.getStorageSync('orders') || [];
-    orders.unshift(order);
-    wx.setStorageSync('orders', orders);
+    wx.showLoading({ title: '提交订单...' });
 
-    // 从购物车中移除已结算的商品
-    const newCartItems = cartItems.filter(item => !item.selected);
-    this.setData({ cartItems: newCartItems });
-    this.saveCartItems();
+    try {
+      // 调用云函数创建订单
+      const { result } = await wx.cloud.callFunction({
+        name: 'createOrder',
+        data: { buyItems }
+      });
 
-    // 跳转到支付页面
-    wx.navigateTo({
-      url: `/pages/mall/payment?orderId=${order.id}`
-    });
-  }
+      console.log("云函数返回：", result);
+
+      if (!result.success) {
+        wx.hideLoading();
+        wx.showToast({
+          title: result.msg || '下单失败',
+          icon: 'none'
+        });
+        return;
+      }
+
+      // 下单成功：更新购物车
+      const newCart = cartItems.filter(item => !item.selected);
+      this.setData({ cartItems: newCart });
+      this.saveCartItems();
+
+      wx.hideLoading();
+      wx.showToast({ title: '下单成功' });
+
+      // ✅ 正确跳转：用返回的 orderId
+      wx.navigateTo({
+        url: `/pages/mall/order-detail?orderId=${result.orderId}`
+      });
+
+    } catch (err) {
+      wx.hideLoading();
+      console.error("下单异常", err);
+      wx.showToast({ title: '下单失败', icon: 'none' });
+    }
+  },
 }); 

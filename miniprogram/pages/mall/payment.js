@@ -1,93 +1,72 @@
 Page({
   data: {
     orderId: '',
-    order: null,
-    selectedMethod: ''
+    order: {}
   },
 
   onLoad(options) {
-    const { orderId } = options;
-    this.setData({ orderId });
-    this.loadOrderInfo();
-  },
-
-  // 加载订单信息
-  loadOrderInfo() {
-    const orders = wx.getStorageSync('orders') || [];
-    const order = orders.find(order => order.id === this.data.orderId);
-    
-    if (order) {
-      this.setData({ order });
-    } else {
-      wx.showToast({
-        title: '订单不存在',
-        icon: 'error'
-      });
-      setTimeout(() => {
-        wx.navigateBack();
-      }, 1500);
+    if (options.orderId) {
+      this.setData({ orderId: options.orderId })
+      this.getOrder()
     }
   },
 
-  // 选择支付方式
-  selectMethod(e) {
-    const { method } = e.currentTarget.dataset;
-    this.setData({ selectedMethod: method });
-  },
-
-  // 处理支付
-  handlePayment() {
-    const { order, selectedMethod } = this.data;
-    
-    if (!selectedMethod) {
-      wx.showToast({
-        title: '请选择支付方式',
-        icon: 'none'
-      });
-      return;
-    }
-
-    // 模拟支付过程
-    wx.showLoading({
-      title: '支付处理中...'
-    });
-
-    setTimeout(() => {
-      wx.hideLoading();
+  async getOrder() {
+    const db = wx.cloud.database()
+    try {
+      const res = await db.collection('orders').doc(this.data.orderId).get()
+      const order = res.data
       
-      // 更新订单状态
-      const orders = wx.getStorageSync('orders') || [];
-      const index = orders.findIndex(item => item.id === order.id);
-      
-      if (index > -1) {
-        orders[index].status = 'paid';
-        wx.setStorageSync('orders', orders);
-        
-        wx.showToast({
-          title: '支付成功',
-          icon: 'success'
-        });
-
-        // 延迟返回订单列表
-        setTimeout(() => {
-          wx.redirectTo({
-            url: '/pages/mall/order'
-          });
-        }, 1500);
+      // 统一状态文字
+      let statusText = "";
+      if(order.status === "pending"){
+        statusText = "待支付";
+      }else if(order.status === "paid"){
+        statusText = "已支付";
+      }else{
+        statusText = order.status;
       }
-    }, 2000);
+
+      this.setData({
+        order: {
+          ...order,
+          shortId: order._id.substring(0, 16),
+          fixedPrice: order.totalPrice.toFixed(2),
+          statusText: statusText
+        }
+      })
+    } catch (err) {
+      console.error('获取订单失败', err)
+    }
   },
 
-  // 取消支付
-  cancelPayment() {
+  toPay() {
     wx.showModal({
-      title: '取消支付',
-      content: '确定要取消支付吗？',
+      title: '确认支付',
+      content: '确定支付该订单？',
       success: (res) => {
         if (res.confirm) {
-          wx.navigateBack();
+          this.doPay()
         }
       }
-    });
+    })
+  },
+
+  async doPay() {
+    wx.showLoading({ title: '支付中...' })
+    const db = wx.cloud.database()
+    try {
+      await db.collection('orders').doc(this.data.orderId).update({
+        data: { status: 'paid' }
+      })
+      wx.hideLoading()
+      wx.showToast({ title: '支付成功' })
+      setTimeout(() => {
+        wx.redirectTo({ url: '/pages/mall/order' })
+      }, 1200)
+    } catch (err) {
+      wx.hideLoading()
+      wx.showToast({ title: '支付失败', icon: 'none' })
+    }
   }
-}); 
+})

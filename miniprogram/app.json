@@ -5,6 +5,7 @@
     "pages/mall/product-detail",
     "pages/mall/cart",
     "pages/mall/order",
+    "pages/mall/order-detail",
     "pages/mall/payment",
     "pages/mall/favorites",
     "pages/mall/address",

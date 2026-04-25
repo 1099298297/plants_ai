@@ -1,0 +1,8 @@
+{
+  "name": "createOrder",
+  "version": "1.0.0",
+  "description": "创建订单",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}
