@@ -9,8 +9,20 @@ Page({
 
   async getMyOrders() {
     const db = wx.cloud.database()
+    // 获取当前用户 openid
+    const openid = wx.getStorageSync('user_openid')
+
+    // 未登录 → 清空订单
+    if (!openid) {
+      this.setData({ orderList: [] })
+      return
+    }
+
     try {
       const res = await db.collection('orders')
+        .where({
+          openid: openid  // 👈 只查自己的订单（只加了这一句）
+        })
         .orderBy('createTime', 'desc')
         .get()
 
@@ -39,7 +51,6 @@ Page({
     wx.navigateTo({ url: '/pages/mall/payment?orderId=' + id })
   },
 
-  // 取消订单
   cancelOrder(e) {
     const orderId = e.currentTarget.dataset.id
     wx.showModal({

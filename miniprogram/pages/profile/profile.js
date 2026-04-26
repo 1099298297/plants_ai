@@ -76,10 +76,44 @@ Page({
     });
   },
 
-  navigateToOrders() { wx.navigateTo({ url: '/pages/mall/order' }); },
-  navigateToCart() { wx.navigateTo({ url: '/pages/mall/cart' }); },
-  navigateToFavorites() { wx.navigateTo({ url: '/pages/mall/favorites' }); },
-  navigateToAddress() { wx.navigateTo({ url: '/pages/mall/address' }); },
-  navigateToHistory() { wx.navigateTo({ url: '/pages/mall/history' }); },
-  navigateToSettings() { wx.navigateTo({ url: '/pages/settings/settings' }); }
+  // 公共：未登录拦截
+  checkLoginAndNavigate(url) {
+    const openid = wx.getStorageSync('user_openid')
+    if (!openid) {
+      wx.showToast({ title: '请先登录', icon: 'none' })
+      return false
+    }
+    wx.navigateTo({ url })
+    return true
+  },
+
+    // 我的订单
+  navigateToOrders() {
+    this.checkLoginAndNavigate('/pages/mall/order')
+  },
+
+  // 购物车
+  navigateToCart() {
+    this.checkLoginAndNavigate('/pages/mall/cart')
+  },
+
+  // 我的收藏
+  navigateToFavorites() {
+    this.checkLoginAndNavigate('/pages/mall/favorites')
+  },
+
+  // 收货地址
+  navigateToAddress() {
+    this.checkLoginAndNavigate('/pages/mall/address')
+  },
+
+  // 浏览历史
+  navigateToHistory() {
+    this.checkLoginAndNavigate('/pages/mall/history')
+  },
+
+  // 设置
+  navigateToSettings() {
+    wx.navigateTo({ url: '/pages/settings/settings' })
+  },
 });
