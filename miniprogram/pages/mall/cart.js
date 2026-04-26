@@ -131,8 +131,8 @@ Page({
     wx.setStorageSync('cart', this.data.cartItems);
   },
 
-  // 结算
-  async checkout() {
+  // 结算 → 跳转到 checkout 页面（不再直接下单）
+  checkout() {
     const { cartItems } = this.data;
     const selectedItems = cartItems.filter(item => item.selected);
 
@@ -141,49 +141,12 @@ Page({
       return;
     }
 
-    // 只传 商品ID + 数量
-    const buyItems = selectedItems.map(item => ({
-      productId: item.id,
-      quantity: item.quantity
-    }));
+    // 临时存储选中的购物车商品
+    wx.setStorageSync('tempCheckoutCart', selectedItems);
 
-    wx.showLoading({ title: '提交订单...' });
-
-    try {
-      // 调用云函数创建订单
-      const { result } = await wx.cloud.callFunction({
-        name: 'createOrder',
-        data: { buyItems }
-      });
-
-      console.log("云函数返回：", result);
-
-      if (!result.success) {
-        wx.hideLoading();
-        wx.showToast({
-          title: result.msg || '下单失败',
-          icon: 'none'
-        });
-        return;
-      }
-
-      // 下单成功：更新购物车
-      const newCart = cartItems.filter(item => !item.selected);
-      this.setData({ cartItems: newCart });
-      this.saveCartItems();
-
-      wx.hideLoading();
-      wx.showToast({ title: '下单成功' });
-
-      // ✅ 正确跳转：用返回的 orderId
-      wx.navigateTo({
-        url: `/pages/mall/order-detail?orderId=${result.orderId}`
-      });
-
-    } catch (err) {
-      wx.hideLoading();
-      console.error("下单异常", err);
-      wx.showToast({ title: '下单失败', icon: 'none' });
-    }
+    // 跳转到结算页，标记来自 cart
+    wx.navigateTo({
+      url: '/pages/mall/checkout/checkout?from=cart'
+    });
   },
 }); 

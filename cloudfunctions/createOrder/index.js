@@ -48,6 +48,7 @@ exports.main = async (event, context) => {
       data: {
         openid: OPENID,
         items: orderItems,
+        address: event.address,
         totalPrice,
         status: 'pending',
         createTime: db.serverDate()

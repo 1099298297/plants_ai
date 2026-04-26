@@ -5,6 +5,16 @@
     <text class="tip" wx:if="{{order.status === 'pending'}}">请尽快完成支付</text>
   </view>
 
+  <!-- 收货地址（新增，样式完全统一） -->
+  <view class="address-card card" wx:if="{{order.address}}">
+    <view class="section-title">收货地址</view>
+    <view class="address-info">
+      <text class="name">{{order.address.name}}</text>
+      <text class="phone">{{order.address.phone}}</text>
+      <text class="address-detail">{{order.address.province}}{{order.address.city}}{{order.address.district}}{{order.address.detail}}</text>
+    </view>
+  </view>
+
   <!-- 订单信息 -->
   <view class="order-info card">
     <view class="info-item">

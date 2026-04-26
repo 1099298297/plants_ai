@@ -1,0 +1,48 @@
+<view class="container">
+
+<!-- 地址卡片 -->
+<view class="card address-card" bindtap="goSelectAddress">
+  <view class="address-inner" wx:if="{{hasAddress}}">
+    <view class="address-top">
+      <text class="name">{{address.name}}</text>
+      <text class="phone">{{address.phone}}</text>
+      <text class="default-tag" wx:if="{{address.isDefault}}">默认</text>
+    </view>
+    <view class="address-detail">
+      {{address.province}}{{address.city}}{{address.district}}{{address.detail}}
+    </view>
+    <image class="arrow" src="/images/icons/arrow-right.png"></image>
+  </view>
+
+  <view class="no-address-inner" wx:else>
+    <text>请选择收货地址</text>
+    <image class="arrow" src="/images/icons/arrow-right.png"></image>
+  </view>
+</view>
+
+<!-- 商品卡片：永远循环 cartList -->
+<view class="card goods-card">
+  <view class="section-title">商品信息</view>
+
+  <view class="goods-item" wx:for="{{cartList}}" wx:key="id">
+    <image src="{{item.image}}" mode="aspectFill"></image>
+    <view class="goods-info">
+      <text class="name">{{item.name}}</text>
+      <text class="price">¥{{item.price}}</text>
+      <text class="num">x{{item.quantity}}</text>
+    </view>
+  </view>
+</view>
+
+<!-- 总价 -->
+<view class="card total-card">
+  <text>实付金额</text>
+  <text class="price">¥{{total}}</text>
+</view>
+
+<!-- 底部 -->
+<view class="pay-bottom">
+  <button class="pay-btn" bindtap="submitOrder" disabled="{{!hasAddress}}">提交订单</button>
+</view>
+
+</view>

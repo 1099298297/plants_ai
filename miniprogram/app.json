@@ -9,6 +9,7 @@
     "pages/mall/payment",
     "pages/mall/favorites",
     "pages/mall/address",
+    "pages/mall/checkout/checkout",
     "pages/mall/address-edit",
     "pages/mall/history",
     "pages/settings/settings",

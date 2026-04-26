@@ -1,3 +1,5 @@
+const app = getApp()
+
 Page({
   data: {
     product: null,
@@ -100,45 +102,23 @@ Page({
     });
   },
 
-  buyNow: function() {
+  buyNow() {
     const product = this.data.product;
   
-    if (!product || !product.id) {
-      wx.showToast({ title: '商品异常', icon: 'none' });
-      return;
-    }
+    // 包装成数组，统一格式！
+    const checkoutData = [{
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.images[0],
+      quantity: 1,
+      selected: true
+    }];
   
-    wx.showLoading({ title: '生成订单中...' });
+    wx.setStorageSync('tempCheckoutCart', checkoutData);
   
-    // ✅ 完全按照你的云函数格式传参
-    wx.cloud.callFunction({
-      name: 'createOrder',
-      data: {
-        buyItems: [
-          {
-            productId: product.id,
-            quantity: 1
-          }
-        ]
-      },
-      success: (res) => {
-        wx.hideLoading();
-        if (res.result.success) {
-          wx.showToast({ title: '下单成功' });
-          wx.navigateTo({
-            url: '/pages/mall/order-detail?orderId=' + res.result.orderId
-          });
-        } else {
-          wx.showToast({
-            title: res.result.msg || '下单失败',
-            icon: 'none'
-          });
-        }
-      },
-      fail: () => {
-        wx.hideLoading();
-        wx.showToast({ title: '网络异常', icon: 'none' });
-      }
+    wx.navigateTo({
+      url: '/pages/mall/checkout/checkout?from=product'
     });
   },
 
