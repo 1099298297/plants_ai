@@ -115,4 +115,7 @@
   height: 88rpx;
   line-height: 88rpx;
   font-size: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

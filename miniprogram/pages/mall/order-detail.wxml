@@ -2,7 +2,7 @@
   <!-- 订单状态 -->
   <view class="order-status">
     <text class="status-text {{order.status}}">{{order.statusText}}</text>
-    <text class="tip">请尽快完成支付</text>
+    <text class="tip" wx:if="{{order.status === 'pending'}}">请尽快完成支付</text>
   </view>
 
   <!-- 订单信息 -->
@@ -13,7 +13,7 @@
     </view>
     <view class="info-item">
       <text>创建时间</text>
-      <text>{{formatTime(order.createTime)}}</text>
+      <text>{{order.createTimeText}}</text>
     </view>
   </view>
 

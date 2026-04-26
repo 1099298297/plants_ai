@@ -94,7 +94,7 @@ Page({
     }
     
     wx.setStorageSync('cart', cart);
-    wx.showToast({
+    wx.showToast({  
       title: '已加入购物车',
       icon: 'success'
     });
@@ -102,19 +102,43 @@ Page({
 
   buyNow: function() {
     const product = this.data.product;
-    // 将商品信息存储到全局数据
-    const app = getApp();
-    app.globalData.checkoutProduct = {
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.images[0],
-      quantity: 1
-    };
-    
-    // 跳转到订单确认页面
-    wx.navigateTo({
-      url: '/pages/checkout/checkout'
+  
+    if (!product || !product.id) {
+      wx.showToast({ title: '商品异常', icon: 'none' });
+      return;
+    }
+  
+    wx.showLoading({ title: '生成订单中...' });
+  
+    // ✅ 完全按照你的云函数格式传参
+    wx.cloud.callFunction({
+      name: 'createOrder',
+      data: {
+        buyItems: [
+          {
+            productId: product.id,
+            quantity: 1
+          }
+        ]
+      },
+      success: (res) => {
+        wx.hideLoading();
+        if (res.result.success) {
+          wx.showToast({ title: '下单成功' });
+          wx.navigateTo({
+            url: '/pages/mall/order-detail?orderId=' + res.result.orderId
+          });
+        } else {
+          wx.showToast({
+            title: res.result.msg || '下单失败',
+            icon: 'none'
+          });
+        }
+      },
+      fail: () => {
+        wx.hideLoading();
+        wx.showToast({ title: '网络异常', icon: 'none' });
+      }
     });
   },
 
