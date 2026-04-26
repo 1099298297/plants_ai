@@ -7,28 +7,29 @@ exports.main = async (event, context) => {
   const { OPENID } = cloud.getWXContext()
 
   try {
-    // 1. 查订单
-    const { data: order } = await db.collection('orders').doc(orderId).get()
+    // 1. 查询订单
+    const orderRes = await db.collection('orders').doc(orderId).get()
+    const order = orderRes.data
 
-    // 2. 安全校验：只能付自己的订单
+    // 2. 安全验证：只能改自己的订单
     if (order.openid !== OPENID) {
-      return { success: false, msg: '无权限' }
+      return { success: false, msg: '无权限操作此订单' }
     }
 
-    // 3. 只能支付待支付订单
+    // 3. 必须是待支付才能支付
     if (order.status !== 'pending') {
       return { success: false, msg: '订单状态异常' }
     }
 
-    // 4. 改为已支付
+    // 4. 云函数修改状态（有权限，不受限）
     await db.collection('orders').doc(orderId).update({
       data: { status: 'paid' }
     })
 
     return { success: true }
 
-  } catch (e) {
-    console.error(e)
+  } catch (err) {
+    console.error(err)
     return { success: false, msg: '支付失败' }
   }
 }

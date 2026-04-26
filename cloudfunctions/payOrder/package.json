@@ -1,6 +1,8 @@
 {
   "name": "payOrder",
+  "version": "1.0.0",
+  "description": "支付订单",
   "dependencies": {
-    "wx-server-sdk": "~2.6.3"
+    "wx-server-sdk": "latest"
   }
 }

@@ -17,7 +17,6 @@ Page({
       const res = await db.collection('orders').doc(this.data.orderId).get()
       const order = res.data
       
-      // 统一状态文字
       let statusText = "";
       if(order.status === "pending"){
         statusText = "待支付";
@@ -52,21 +51,32 @@ Page({
     })
   },
 
+  // ✅ 修复：调用云函数支付（有权限、有提示、不会静默失败）
   async doPay() {
     wx.showLoading({ title: '支付中...' })
-    const db = wx.cloud.database()
-    try {
-      await db.collection('orders').doc(this.data.orderId).update({
-        data: { status: 'paid' }
-      })
+
+    wx.cloud.callFunction({
+      name: 'payOrder',
+      data: { orderId: this.data.orderId }
+    }).then(res => {
       wx.hideLoading()
-      wx.showToast({ title: '支付成功' })
-      setTimeout(() => {
-        wx.redirectTo({ url: '/pages/mall/order' })
-      }, 1200)
-    } catch (err) {
+      
+      if (res.result.success) {
+        wx.showToast({ title: '支付成功' })
+        setTimeout(() => {
+          wx.redirectTo({ url: '/pages/mall/order' })
+        }, 1200)
+      } else {
+        // ✅ 自动提示失败，不会卡住
+        wx.showToast({
+          title: res.result.msg || '支付失败',
+          icon: 'none'
+        })
+      }
+    }).catch(err => {
       wx.hideLoading()
-      wx.showToast({ title: '支付失败', icon: 'none' })
-    }
+      wx.showToast({ title: '支付请求失败', icon: 'none' })
+      console.error(err)
+    })
   }
 })
