@@ -14,19 +14,16 @@ Page({
         .orderBy('createTime', 'desc')
         .get()
 
-      // ✅ 在这里处理所有字符串、数字格式
       const formatOrders = res.data.map(item => {
         return {
           ...item,
-          shortId: item._id.substring(0, 16)+'...', // 短订单号
-          fixedPrice: item.totalPrice.toFixed(2), // 两位小数价格
-          statusText: this.getStatusText(item.status) // 状态文本
+          shortId: item._id.substring(0, 16) + '...',
+          fixedPrice: item.totalPrice.toFixed(2),
+          statusText: this.getStatusText(item.status)
         }
       })
 
-      this.setData({
-        orderList: formatOrders
-      })
+      this.setData({ orderList: formatOrders })
     } catch (err) {
       console.error("获取订单失败", err)
     }
@@ -34,16 +31,47 @@ Page({
 
   goToDetail(e) {
     const id = e.currentTarget.dataset.id
-    wx.navigateTo({
-      url: '/pages/mall/order-detail?orderId=' + id
-    })
+    wx.navigateTo({ url: '/pages/mall/order-detail?orderId=' + id })
   },
 
   goToPay(e) {
     const id = e.currentTarget.dataset.id
-    wx.navigateTo({
-      url: '/pages/mall/payment?orderId=' + id
+    wx.navigateTo({ url: '/pages/mall/payment?orderId=' + id })
+  },
+
+  // 取消订单
+  cancelOrder(e) {
+    const orderId = e.currentTarget.dataset.id
+    wx.showModal({
+      title: '取消订单',
+      content: '确定要取消该订单吗？',
+      success: (res) => {
+        if (res.confirm) {
+          this.doCancel(orderId)
+        }
+      }
     })
+  },
+
+  async doCancel(orderId) {
+    wx.showLoading()
+    try {
+      const { result } = await wx.cloud.callFunction({
+        name: 'cancelOrder',
+        data: { orderId }
+      })
+
+      wx.hideLoading()
+      if (result.success) {
+        wx.showToast({ title: '已取消' })
+        this.getMyOrders()
+      } else {
+        wx.showToast({ title: result.msg, icon: 'none' })
+      }
+    } catch (err) {
+      wx.hideLoading()
+      wx.showToast({ icon: 'none' })
+    }
   },
 
   getStatusText(status) {

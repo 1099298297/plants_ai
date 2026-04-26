@@ -60,7 +60,7 @@
 .goods-item {
   display: flex;
   padding: 20rpx 0;
-  border-bottom: 1rpx solid #f5f5f5;
+  border-bottom: 1rpx solid #f5f5f0;
 }
 
 .goods-item:last-child {
@@ -90,20 +90,55 @@
   color: #666;
   margin-right: 20rpx;
 }
-
+/* 父层：禁止挤压，完美分配宽度 */
 .order-bottom {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   margin-top: 20rpx;
   padding-top: 20rpx;
   border-top: 1rpx solid #f0f0f0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
+/* 左边价格：占 50%，不被挤压 */
 .total-info {
+  width: 50%;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+}
+
+/* 右边按钮组：占 50%，放两个按钮 */
+.btn-scale {
+  width: 50%;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10rpx;
+}
+
+/* 按钮：各占一半（也就是整体屏幕的 25%） */
+.pay-btn, .cancel-btn {
+  width: 50%;
+  font-size: 22rpx;
+  height: 46rpx;
+  line-height: 46rpx;
+  text-align: center;
+  border-radius: 23rpx;
+  color: #fff;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.pay-btn {
+  background: #4CAF50;
+}
+
+.cancel-btn {
+  background: #999;
 }
 
 .total-info text {
@@ -118,27 +153,11 @@
   font-size: 30rpx !important;
 }
 
-.pay-btn {
-  background: #4CAF50;
-  color: #fff;
-  border-radius: 30rpx;
-  font-size: 26rpx;
-  padding: 0 24rpx;
-  height: 60rpx;
-  line-height: 60rpx;
-}
-
 .empty-order {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 100rpx 0;
-}
-
-.empty-order image {
-  width: 200rpx;
-  height: 200rpx;
-  margin-bottom: 20rpx;
 }
 
 .empty-order text {
