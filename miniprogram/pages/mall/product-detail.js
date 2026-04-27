@@ -7,50 +7,75 @@ Page({
     showModal: false,
     selectedSpecs: {},
     specKeys: [],
-    actionType: ""
+    actionType: "",
+    qty: 1,          // 新增
+    maxStock: 999    // 新增
   },
 
+  // 每次显示页面都刷新（包括返回）
+  onShow() {
+    const pages = getCurrentPages();
+    const currentPage = pages[pages.length - 1];
+    const productId = currentPage.options.id;
+
+    if (productId) {
+      this.loadProductDetail(productId);
+      this.checkFavoriteStatus(productId);
+    }
+  },
+
+  // 只在第一次进入执行
   onLoad(options) {
-    const productId = options.id;
-    this.loadProductDetail(productId);
-    this.checkFavoriteStatus(productId);
-    this.recordBrowseHistory(productId);
+    this.recordBrowseHistory(options.id);
   },
 
+  // 从后端云接口获取商品详情（实时库存）
   loadProductDetail(productId) {
-    const allProducts = app.globalData.allProducts || [];
-    let product = allProducts.find(p => String(p.id) === String(productId));
+    console.log(productId)
+    wx.cloud.callFunction({
+      name: 'getProductDetail',
+      data: { id: productId }
+    }).then(res => {
+      if (!res.result.success) {
+        wx.showToast({ title: res.result.msg, icon: 'none' })
+        return
+      }
 
-    if (!product) {
-      product = { id: productId, name: '未知商品', price: 0, description: '', images: [], details: [], specs: {} };
-    } else {
-      product = {
+      const product = res.result.data
+
+      // 格式化页面数据
+      const formatProduct = {
         ...product,
-        images: [product.image],
+        images: product.image ? [product.image] : [],
+        stock: product.stock || 0,
         details: [
           { label: '商品编号', value: 'SP' + product.id },
           { label: '商品分类', value: product.category === 'plants' ? '植物' : '工具' },
-          { label: '商品描述', value: product.description }
+          { label: '商品描述', value: product.description || '' }
         ],
         specs: product.specs || {}
-      };
-    }
+      }
 
-    this.setData({
-      product,
-      specKeys: Object.keys(product.specs),
-      selectedSpecs: {}
-    });
+      this.setData({
+        product: formatProduct,
+        specKeys: Object.keys(formatProduct.specs),
+        selectedSpecs: {}
+      })
+    }).catch(err => {
+      console.error('请求失败', err)
+    })
   },
 
   noop(){},
 
   showSpecModal() {
-    this.setData({ showModal: true, actionType: "cart", selectedSpecs: {} });
+    const product = this.data.product;
+    this.setData({ showModal: true, actionType: "cart", selectedSpecs: {} ,qty: 1, maxStock: product.stock || 999});
   },
 
   showBuyModal() {
-    this.setData({ showModal: true, actionType: "buy", selectedSpecs: {} });
+    const product = this.data.product;
+    this.setData({ showModal: true, actionType: "buy", selectedSpecs: {} ,qty: 1, maxStock: product.stock || 999});
   },
 
   // ========== 真正互斥选择 ==========
@@ -83,9 +108,9 @@ Page({
       specText += k + '：' + selectedSpecs[k] + ' ';
     });
     if (this.data.actionType === 'cart') {
-      this.addToCartWithSpec(specText);
+      this.addToCartWithSpec(specText, this.data.qty);
     } else {
-      this.buyNowWithSpec(specText);
+      this.buyNowWithSpec(specText, this.data.qty);
     }
 
     this.setData({ showModal: false });
@@ -95,7 +120,7 @@ Page({
     this.setData({ showModal: false });
   },
 
-  addToCartWithSpec(spec) {
+  addToCartWithSpec(spec,qty = 1) {
     const p = this.data.product;
     let cart = wx.getStorageSync('cart') || [];
     const idx = cart.findIndex(i => i.id === p.id && i.spec === spec);
@@ -108,7 +133,7 @@ Page({
         price: p.price,
         image: p.images[0],
         spec: spec,
-        quantity: 1,
+        quantity: qty,
         selected: true
       });
     }
@@ -116,7 +141,7 @@ Page({
     wx.showToast({ title: '加入成功' });
   },
 
-  buyNowWithSpec(spec) {
+  buyNowWithSpec(spec,qty = 1) {
     const p = this.data.product;
     const data = [{
       id: p.id,
@@ -124,11 +149,25 @@ Page({
       price: p.price,
       image: p.images[0],
       spec: spec,
-      quantity: 1,
+      quantity: qty,
       selected: true
     }];
     wx.setStorageSync('tempCheckoutCart', data);
     wx.navigateTo({ url: '/pages/mall/checkout/checkout?from=product' });
+  },
+
+  // 数量 +
+  addQty() {
+    let { qty, maxStock } = this.data;
+    if (qty >= maxStock) return;
+    this.setData({ qty: qty + 1 });
+  },
+
+  // 数量 -
+  cutQty() {
+    let { qty } = this.data;
+    if (qty <= 1) return;
+    this.setData({ qty: qty - 1 });
   },
 
   // 原有逻辑

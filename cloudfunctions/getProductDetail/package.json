@@ -1,0 +1,8 @@
+{
+  "name": "getProductDetail",
+  "version": "1.0.0",
+  "description": "获取商品详情",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

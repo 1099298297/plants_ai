@@ -39,11 +39,9 @@
       <text bindtap="closeModal">×</text>
     </view>
 
-    <!-- 外层循环：规格名称 颜色/尺寸 -->
+    <!-- 规格选择区域（你原来的，不动） -->
     <view class="spec-group" wx:for="{{specKeys}}" wx:key="*this">
       <view class="spec-title">{{item}}</view>
-
-      <!-- 内层循环：规格值 红色/蓝色 -->
       <view class="spec-items">
         <text 
           wx:for="{{product.specs[item]}}" 
@@ -55,6 +53,19 @@
           bindtap="selectSpecItem"
         >{{val}}</text>
       </view>
+    </view>
+
+    <!-- ====================== -->
+    <!-- ✅ 新增：数量选择器 + 库存显示 -->
+    <!-- ====================== -->
+    <view class="quantity-section">
+      <text class="q-label">购买数量</text>
+      <view class="q-control">
+        <text class="q-btn" bindtap="cutQty">-</text>
+        <text class="q-num">{{qty}}</text>
+        <text class="q-btn" bindtap="addQty">+</text>
+      </view>
+      <text class="stock-tip" wx:if="{{product.stock > 0}}">库存：{{product.stock}}件</text>
     </view>
 
     <button class="confirm" bindtap="confirmSpec">确认</button>
