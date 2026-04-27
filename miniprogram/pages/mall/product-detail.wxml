@@ -24,10 +24,39 @@
       <image src="{{isFavorite ? '/images/icons/heart-filled.png' : '/images/icons/heart.png'}}" mode="aspectFit"></image>
       <text>收藏</text>
     </view>
-    <view class="action-item" bindtap="addToCart">
+    <view class="action-item" bindtap="showSpecModal">
       <image src="/images/icons/cart.png" mode="aspectFit"></image>
       <text>加入购物车</text>
     </view>
-    <button class="buy-now" bindtap="buyNow">立即购买</button>
+    <button class="buy-now" bindtap="showBuyModal">立即购买</button>
   </view>
-</view> 
+</view>
+
+<view class="spec-modal" wx:if="{{showModal}}" bindtap="closeModal">
+  <view class="spec-popup" catchtap="noop">
+    <view class="spec-header">
+      <text>选择规格</text>
+      <text bindtap="closeModal">×</text>
+    </view>
+
+    <!-- 外层循环：规格名称 颜色/尺寸 -->
+    <view class="spec-group" wx:for="{{specKeys}}" wx:key="*this">
+      <view class="spec-title">{{item}}</view>
+
+      <!-- 内层循环：规格值 红色/蓝色 -->
+      <view class="spec-items">
+        <text 
+          wx:for="{{product.specs[item]}}" 
+          wx:for-item="val"
+          wx:key="*this"
+          class="spec-item {{selectedSpecs[item] === val ? 'active' : ''}}"
+          data-key="{{item}}"
+          data-val="{{val}}"
+          bindtap="selectSpecItem"
+        >{{val}}</text>
+      </view>
+    </view>
+
+    <button class="confirm" bindtap="confirmSpec">确认</button>
+  </view>
+</view>

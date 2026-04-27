@@ -28,6 +28,7 @@
     <image src="{{item.image}}" mode="aspectFill"></image>
     <view class="goods-info">
       <text class="name">{{item.name}}</text>
+      <text class="spec" wx:if="{{item.spec}}">{{item.spec}}</text>
       <text class="price">¥{{item.price}}</text>
       <text class="num">x{{item.quantity}}</text>
     </view>

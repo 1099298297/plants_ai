@@ -139,3 +139,10 @@
   align-items: center;
   justify-content: center;
 }
+
+.spec {
+  font-size: 24rpx;
+  color: #999;
+  margin: 4rpx 0;
+  display: block;
+}

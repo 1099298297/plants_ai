@@ -85,6 +85,15 @@
   margin-bottom: 10rpx;
 }
 
+/* 订单页面 - 规格样式 */
+.goods-info .spec {
+  font-size: 24rpx;
+  color: #999;
+  margin: 4rpx 0;
+  display: block;
+  line-height: 1.2;
+}
+
 .goods-info text {
   font-size: 26rpx;
   color: #666;
@@ -100,6 +109,8 @@
   width: 100%;
   box-sizing: border-box;
 }
+
+
 
 /* 左边价格：占 50%，不被挤压 */
 .total-info {

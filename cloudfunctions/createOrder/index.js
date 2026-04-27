@@ -39,7 +39,8 @@ exports.main = async (event, context) => {
         name: product.name,
         price: product.price,
         quantity: buy.quantity,
-        image: product.image
+        image: product.image,
+        spec: buy.spec
       })
     }
 

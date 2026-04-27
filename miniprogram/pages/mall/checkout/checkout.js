@@ -65,7 +65,8 @@ Page({
   
     const buyItems = cartList.map(i => ({
       productId: i.id,
-      quantity: i.quantity
+      quantity: i.quantity,
+      spec: i.spec || '默认规格'
     }))
     console.log(address)
     wx.showLoading({ title: '提交中...' })

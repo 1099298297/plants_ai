@@ -59,6 +59,14 @@
   overflow: hidden;
 }
 
+/* 规格样式 */
+.spec {
+  font-size: 24rpx;
+  color: #999;
+  margin: 4rpx 0;
+  display: block;
+}
+
 .product-price {
   font-size: 32rpx;
   color: #ff4d4f;
