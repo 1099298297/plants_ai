@@ -120,23 +120,30 @@ Page({
     this.setData({ showModal: false });
   },
 
-  addToCartWithSpec(spec,qty = 1) {
+  addToCartWithSpec(spec, qty = 1) {
     const p = this.data.product;
     let cart = wx.getStorageSync('cart') || [];
+  
+    // 🔥 查找：同商品 ID + 同规格 spec
     const idx = cart.findIndex(i => i.id === p.id && i.spec === spec);
+  
     if (idx > -1) {
-      cart[idx].quantity++;
+      // ✅ 找到 → 数量叠加（加上本次选择的 qty）
+      cart[idx].quantity += qty;
     } else {
+      // ✅ 没找到 → 新增一条，并生成唯一 uid
       cart.push({
+        uid: Date.now() + '' + Math.floor(Math.random() * 10000), // 唯一ID
         id: p.id,
         name: p.name,
         price: p.price,
         image: p.images[0],
         spec: spec,
         quantity: qty,
-        selected: true
+        selected: false
       });
     }
+  
     wx.setStorageSync('cart', cart);
     wx.showToast({ title: '加入成功' });
   },

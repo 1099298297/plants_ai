@@ -1,7 +1,5 @@
 const cloud = require('wx-server-sdk')
-cloud.init({
-  env: cloud.DYNAMIC_CURRENT_ENV
-})
+cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
 const _ = db.command
 
@@ -10,35 +8,35 @@ exports.main = async (event, context) => {
   const { OPENID } = cloud.getWXContext()
 
   try {
-    // 1. 查询商品
+    // 1. 查出所有商品
     const productIds = buyItems.map(i => i.productId)
     const { data: products } = await db.collection('products')
       .where({ id: _.in(productIds) })
       .get()
 
-    // 2. 统一校验库存 → 不足直接返回：库存不足
+    // 2. 统一校验库存（按商品合并）
+    const productStockMap = {}
+    for (const buy of buyItems) {
+      const pid = buy.productId
+      if (!productStockMap[pid]) productStockMap[pid] = 0
+      productStockMap[pid] += buy.quantity
+    }
+
+    // 检查是否超过库存
     for (const buy of buyItems) {
       const product = products.find(p => p.id === buy.productId)
-      if (!product) {
-        return { success: false, msg: '商品不存在' }
-      }
+      if (!product) return { success: false, msg: '商品不存在' }
 
-      // 如果有库存字段，就校验
-      if (product.stock !== undefined && product.stock !== null) {
+      if (product.stock != null) {
         const stock = Number(product.stock)
         if (isNaN(stock)) continue
-
-        // ❌ 库存不足 → 统一返回固定文字
-        if (stock < buy.quantity) {
-          return {
-            success: false,
-            msg: '库存不足'  // ✅ 固定文案
-          }
+        if (stock < productStockMap[buy.productId]) {
+          return { success: false, msg: '库存不足' }
         }
       }
     }
 
-    // 3. 生成订单商品列表
+    // 3. 生成订单商品
     let totalPrice = 0
     const orderItems = []
     for (const buy of buyItems) {
@@ -66,19 +64,16 @@ exports.main = async (event, context) => {
       }
     })
 
-    // 5. 扣库存
-    for (const buy of buyItems) {
-      const product = products.find(p => p.id === buy.productId)
-      if (product && product.stock !== undefined) {
-        const stock = Number(product.stock)
-        if (!isNaN(stock)) {
-          await db.collection('products').where({
-            id: buy.productId
-          }).update({
-            data: { stock: _.inc(-buy.quantity) }
-          })
-        }
-      }
+    // ==============================
+    // ✅ 5. 【正确扣库存】按商品ID合并扣
+    // ==============================
+    for (const pid in productStockMap) {
+      const totalQty = productStockMap[pid]
+      await db.collection('products')
+        .where({ id: Number(pid) })
+        .update({
+          data: { stock: _.inc(-totalQty) }
+        })
     }
 
     return {

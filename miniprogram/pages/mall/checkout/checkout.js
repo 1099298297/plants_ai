@@ -82,9 +82,9 @@ Page({
           wx.removeStorageSync('tempCheckoutCart')
   
           if (fromType === 'cart') {
-            const orderIds = cartList.map(i => i.id)
+            const successUids = cartList.map(i => i.uid)
             const oldCart = wx.getStorageSync('cart') || []
-            const newCart = oldCart.filter(item => !orderIds.includes(item.id))
+            const newCart = oldCart.filter(item => !successUids.includes(item.uid))
             wx.setStorageSync('cart', newCart)
           }
   

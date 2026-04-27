@@ -5,9 +5,11 @@
 
   <!-- 购物车列表 -->
   <view class="cart-list" wx:if="{{cartItems.length > 0}}">
-    <view class="cart-item" wx:for="{{cartItems}}" wx:key="id">
+    <view class="cart-item" wx:for="{{cartItems}}" wx:key="uid">
       <view class="checkbox">
-        <checkbox checked="{{item.selected}}" bindtap="toggleSelect" data-id="{{item.id}}"/>
+        <checkbox-group bindchange="toggleSelect" data-uid="{{item.uid}}">
+          <checkbox checked="{{item.selected}}" />
+        </checkbox-group>
       </view>
       <image class="product-image" src="{{item.image}}" mode="aspectFill"></image>
       <view class="product-info">
@@ -15,12 +17,12 @@
         <text class="spec" wx:if="{{item.spec}}">{{item.spec}}</text>
         <text class="product-price">¥{{item.price}}</text>
         <view class="quantity-control">
-          <text class="minus" bindtap="decreaseQuantity" data-id="{{item.id}}">-</text>
+          <text class="minus" bindtap="decreaseQuantity" data-uid="{{item.uid}}">-</text>
           <text class="quantity">{{item.quantity}}</text>
-          <text class="plus" bindtap="increaseQuantity" data-id="{{item.id}}">+</text>
+          <text class="plus" bindtap="increaseQuantity" data-uid="{{item.uid}}">+</text>
         </view>
       </view>
-      <view class="delete-btn" catchtap="removeItem" data-id="{{item.id}}">
+      <view class="delete-btn" catchtap="removeItem" data-uid="{{item.uid}}">
         <image src="/images/icons/delete.png" mode="aspectFit" class="delete-icon"></image>
       </view>
     </view>
