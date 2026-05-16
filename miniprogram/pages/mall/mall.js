@@ -19,10 +19,31 @@ Page({
     isLoadMore: false,
   },
 
-  onLoad: function () {
-    this.loadAllProductsForSuggest(); // 预加载全量商品（只用于建议）
+  onLoad: function (options) {
+    this.loadAllProductsForSuggest();
     this.loadSearchHistory();
-    this.getProducts(); // 分页加载
+  },
+  
+  onShow: function () {
+    const app = getApp();
+    const keyword = app.globalData.homeSearchKeyword;
+  
+    // 每次显示页面时检查是否有来自首页的搜索词
+    if (keyword && keyword.trim() !== '') {
+      // 用完清空
+      app.globalData.homeSearchKeyword = '';
+  
+      this.setData({
+        searchValue: keyword,
+        isSearching: true,
+        showSuggestions: false,
+        page: 1,
+        products: [],
+        hasMore: true
+      }, () => {
+        this.getProducts(); // 执行搜索
+      });
+    }
   },
 
   // 下拉刷新

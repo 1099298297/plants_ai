@@ -1,103 +1,111 @@
 <view class="home-page">
-  <!-- 1. 顶部纯净的绿色渐变区 -->
+  <!-- 1. 顶部浅绿背景区 -->
   <view class="top-banner">
-    <view class="banner-text">
-      <text class="title">藤丰园林</text>
-      <text class="subtitle">植物养护智能助手</text>
+    <!-- 顶部模糊植物背景（用image标签替代wxss背景图） -->
+    <image class="top-bg" src="/images/home/bg.png" mode="aspectFill"></image>
+    
+    <view class="banner-header">
+      <view class="logo-box">
+        <text class="logo-cn">藤丰园林</text>
+        <text class="logo-en">GardenLab</text>
+      </view>
+      <text class="slogan">让生活与自然更近一点</text>
+    </view>
+    
+    <!-- 搜索栏 -->
+    <view class="search-bar" bindtap="focusSearch">
+      <input class="search-input"
+            placeholder="搜索绿植、商品..."
+            placeholder-style="color:#999;"
+            value="{{searchKeyword}}"
+            bindinput="onSearchInput"
+            bindconfirm="onSearchConfirm"
+            confirm-type="search"/>
+      <image class="search-icon" src="/images/icons/search.png" mode="aspectFit" bindtap="onSearchConfirm"></image>
     </view>
   </view>
 
   <!-- 2. 主体内容区 -->
   <view class="main-content">
     
-    <!-- 金刚区：两个核心功能按钮 -->
+    <!-- 两个核心功能卡片 -->
     <view class="action-row">
-      <view class="action-btn" bindtap="navigateToPlantRecognition">
-        <view class="icon-box">
-          <image class="action-icon" src="/images/tabbar/recognition.png"></image>
+      <view class="action-card-left" bindtap="navigateToPlantRecognition">
+        <view class="card-left">
+          <text class="card-title">植物识别</text>
+          <text class="card-subtitle">拍照识别植物</text>
+          <view class="go-link">
+            <text>去识别</text>
+            <text class="arrow">></text>
+          </view>
         </view>
-        <text class="action-text">植物识别</text>
+        <view class="card-icon">
+          <image src="/images/icons/camera.png" mode="aspectFit"></image>
+        </view>
       </view>
       
-      <view class="action-btn" bindtap="navigateToVoiceChat">
-        <view class="icon-box">
-          <image class="action-icon" src="/images/tabbar/chat.png"></image>
+      <view class="action-card" bindtap="navigateToVoiceChat">
+        <view class="card-left">
+          <text class="card-title">智能对话</text>
+          <text class="card-subtitle">植物养护咨询</text>
+          <view class="go-link">
+            <text>去对话</text>
+            <text class="arrow">></text>
+          </view>
         </view>
-        <text class="action-text">智能对话</text>
+        <view class="card-icon">
+          <image src="/images/icons/chat.png" mode="aspectFit"></image>
+        </view>
       </view>
     </view>
 
-    <!-- 3. 最近识别区 -->
+    <!-- 3. 最近识别区（横向滚动） -->
     <view class="history-section">
-      <view class="section-title-box">
-        <view class="vertical-line"></view>
-        <text class="section-title-text">最近识别</text>
+      <view class="section-header">
+        <text class="section-title">最近识别</text>
+        <view class="all-link" bindtap="goToAllHistory">
+          <text>全部记录</text>
+          <text class="arrow">></text>
+        </view>
       </view>
       
-      <!-- ================= 核心修改：三层状态判断 ================= -->
-      
-      <!-- 状态一：未登录，显示提示卡片 -->
-      <!-- <view class="data-card login-prompt-card" wx:if="{{!isLoggedIn}}">
-        <view class="empty-box">
-          <text class="empty-text" style="color:#666; margin-bottom: 20rpx;">需要登陆才能存储和查看最近记录哦</text>
-          <button class="login-button" bindtap="goToLogin">去登录</button>
-        </view>
-      </view> -->
-      <view class="data-card login-prompt-card" wx:if="{{!isLoggedIn}}">
-        <view class="empty-box">
-          <!-- 1. 删除了原有的 style 内联样式，让刚才写的 wxss 样式生效 -->
-          <text class="empty-text">需要登陆才能存储和查看最近记录哦</text>
-          
-          <!-- 2. 文字改回了图一的“一键登录”，并加上了 type="primary" 确保获得微信官方纯正的绿色 -->
-          <button class="login-button" type="primary" bindtap="goToLogin">去登录</button>
-        </view>
+      <!-- 状态一：未登录 -->
+      <view class="empty-state" wx:if="{{!isLoggedIn}}">
+        <text class="empty-text">需要登录才能存储和查看最近记录哦</text>
+        <button class="login-button" type="primary" bindtap="goToLogin">去登录</button>
       </view>
 
-      <!-- 状态二：已登录，但判断逻辑进入 wx:else -->
+      <!-- 状态二：已登录 -->
       <block wx:else>
-        
-        <!-- 子状态：已登录，但是还没有识别记录，显示空状态 -->
-        <view class="data-card empty-card" wx:if="{{historyList.length === 0}}">
-          <view class="empty-box">
-            <image class="empty-img" src="/images/tabbar/recognition.png"></image>
-            <text class="empty-text">暂无识别记录，快去探索吧~</text>
-          </view>
+        <!-- 无记录 -->
+        <view class="empty-state" wx:if="{{historyList.length === 0}}">
+          <image class="empty-img" src="/images/home/hover.png" mode="aspectFit"></image>
+          <text class="empty-text">暂无识别记录，快去探索吧~</text>
         </view>
 
-        <!-- 子状态：已登录，且有记录，渲染列表 -->
-        <block wx:else>
-          <!-- 每个识别记录卡片 -->
-          <view class="data-card" wx:for="{{historyList}}" wx:key="id">
-            
-            <!-- 头部：左图，中文字，右箭头 (点击整行触发展开/收起) -->
-            <view class="card-header" bindtap="toggleDetails" data-index="{{index}}">
-              <image class="plant-thumb" src="{{item.image}}" mode="aspectFill"></image>
-              
-              <view class="basic-info">
-                <text class="plant-name">{{item.basicInfo.name}}</text>
-                <text class="plant-family">{{item.basicInfo.family}}</text>
-              </view>
-              
-              <!-- 下拉箭头 -->
-              <view class="arrow-wrap">
-                <view class="arrow {{item.isExpanded ? 'arrow-up' : 'arrow-down'}}"></view>
-              </view>
-            </view>
-
-            <!-- 详情部分：展开时才显示 -->
-            <view class="card-body" wx:if="{{item.isExpanded}}">
-              <view class="detail-block" wx:for="{{item.details}}" wx:for-item="detail" wx:key="title">
-                <view class="detail-title">{{detail.title}}：</view>
-                <text class="detail-content">{{detail.content}}</text>
-              </view>
-            </view>
-            
+        <!-- 有记录：横向滚动列表 -->
+        <scroll-view class="history-scroll" scroll-x="{{true}}" show-scrollbar="{{false}}" wx:else>
+          <view class="history-item" wx:for="{{historyList}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+            <image class="plant-img" src="{{item.image}}" mode="aspectFill"></image>
+            <text class="plant-name-cn">{{item.basicInfo.name}}</text>
+            <text class="plant-name-en">{{item.basicInfo.latinName || item.basicInfo.family}}</text>
+            <text class="time-text">{{item.time}}</text>
           </view>
-        </block>
-        
+        </scroll-view>
       </block>
-      <!-- ================= 状态判断结束 ================= -->
+    </view>
 
+    <!-- 4. 促销横幅 -->
+    <view class="promo-banner" bindtap="goToShop">
+      <view class="banner-left">
+        <text class="promo-title">春日焕新季</text>
+        <text class="promo-subtitle">精选绿植 低至7折</text>
+        <view class="go-shop-btn">
+          <text>去选购</text>
+          <text class="arrow">></text>
+        </view>
+      </view>
+      <image class="banner-right" src="/images/home/ad_bg.png" mode="aspectFill"></image>
     </view>
   </view>
 </view>

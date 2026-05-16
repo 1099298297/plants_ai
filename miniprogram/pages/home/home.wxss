@@ -1,67 +1,113 @@
-/* ================= 0. 引入外部字体 ================= */
-/* 采用 CSS 方式引入，避免 JS 严格的超时报错 */
-.title {
-  font-family: 'XinWei'; /* 直接用，手机电脑都能完美显示 */
-  font-size: 60rpx;
-}
-
-/* 将原本 page 的背景色移到这里，解决控制台黄色警告 */
+/* ================= 全局样式 ================= */
 .home-page {
   width: 100vw;
   min-height: 100vh;
   box-sizing: border-box;
   overflow-x: hidden;
-  background-color: #F4F7F6; 
+  background-color: #ffffff; 
 }
 
-/* ================= 1. 顶部渐变 Banner ================= */
+/* ================= 1. 顶部浅绿背景区 ================= */
 .top-banner {
   width: 100%;
-  height: 420rpx;
-  background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
-  border-bottom-left-radius: 40rpx;
-  border-bottom-right-radius: 40rpx;
-  display: flex;
-  justify-content: center;
-  padding-top: 90rpx; /* 稍微往上移一点点，给大字腾空间 */
+  height: 480rpx;
+  background: linear-gradient(180deg, #f0f9f0 0%, #ffffff 100%);
+  position: relative;
+  padding: 0 40rpx;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
-.banner-text {
+/* 顶部模糊植物背景（用image标签实现） */
+.top-bg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.7;
+  z-index: 0;
+}
+
+.banner-header {
+  position: relative;
+  z-index: 1;
+  padding-top: 80rpx;
   display: flex;
   flex-direction: column;
+}
+
+.logo-box {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 12rpx;
+}
+
+.logo-cn {
+  font-size: 52rpx;
+  font-weight: bold;
+  color: #2d3436;
+  margin-right: 16rpx;
+}
+
+.logo-en {
+  font-size: 36rpx;
+  color: #66bb6a;
+  font-style: italic;
+}
+
+.slogan {
+  font-size: 28rpx;
+  color: #666666;
+  margin-bottom: 40rpx;
+}
+
+.icon-item image {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+/* 搜索栏 */
+.search-bar {
+  position: relative;
+  z-index: 1;
+  width: 65%;
+  height: 58rpx;
+  background: #ffffff;
+  border-radius: 44rpx;
+  display: flex;
   align-items: center;
-  text-align: center;
+  padding: 0 32rpx;
+  box-sizing: border-box;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
 }
 
-
-/* 主标题 */
-.banner-text .title {
-  font-size: 99rpx; /* 系统粗体字比较宽，字号可以稍微调小一点点防止换行 */
-  font-weight: bold; /* 【恢复加粗】系统字体加粗非常有力量感 */
-  color: #ffffff;
-  margin-bottom: 20rpx; 
-  letter-spacing: 4rpx; /* 字距稍微收敛一点 */
+.search-icon {
+  width: 36rpx;
+  height: 36rpx;
+  opacity: 0.5;
 }
 
-/* 副标题 */
-.banner-text .subtitle {
-  font-size: 35rpx; 
-  color: rgba(255, 255, 255, 0.9);
-  letter-spacing: 2rpx; 
+.search-input {
+  flex: 1;
+  height: 100%;
+  font-size: 28rpx;
+  color: #333333;
+  margin: 0 20rpx;
 }
 
-/* ================= 2. 主体悬浮内容区 ================= */
+/* ================= 2. 主体内容区 ================= */
 .main-content {
   width: 100%;
   padding: 0 40rpx;
   box-sizing: border-box;
-  margin-top: -140rpx; 
-  position: relative;
-  z-index: 10;
+  padding-bottom: 100rpx;
+  margin-top: -80rpx; 
+  position: relative; 
+  z-index: 10; 
 }
 
-/* 两个大按钮横向排列 */
+/* 两个功能卡片横向排列 */
 .action-row {
   display: flex;
   justify-content: space-between; 
@@ -69,246 +115,145 @@
   margin-bottom: 60rpx;
 }
 
-/* 单个按钮卡片 */
-.action-btn {
-  width: 47%; 
-  background: #ffffff;
+/* 单个功能卡片 */
+.action-card-left{
+  width: 40%; 
+  background: #f6f8f5;
   border-radius: 24rpx;
-  padding: 50rpx 0;
+  padding: 40rpx 32rpx;
+  margin-right: 20rpx;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.06); 
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.04); 
+  border: 1rpx solid #f5f5f5;
+}
+.action-card {
+  width: 40%; 
+  background: #f6f8f5;
+  border-radius: 24rpx;
+  padding: 40rpx 32rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.04); 
+  border: 1rpx solid #f5f5f5;
 }
 
-/* 图标外面的淡绿色圆圈 */
-.icon-box {
-  width: 110rpx;
-  height: 110rpx;
-  background-color: rgba(76, 175, 80, 0.1);
-  border-radius: 50%;
+.card-left {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+}
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 12rpx;
+}
+
+.card-subtitle {
+  font-size: 22rpx;
+  color: #807f7f;
   margin-bottom: 24rpx;
 }
 
-.action-icon {
-  width: 56rpx !important;
-  height: 56rpx !important;
-  display: block;
+.go-link {
+  padding: 10rpx 0rpx 10rpx 3rpx; 
+  background-color: #e3f7e3;
+  font-size: 22rpx;
+  border-radius: 20rpx;
+  white-space: nowrap;
+  display: flex;
+  align-items: center; 
+  justify-content: center; 
+  color: #3f8f43;
+  line-height: 1; 
 }
 
-.action-text {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #333333;
+.go-link .arrow {
+  margin-left: 6rpx;
+}
+
+/* 右侧绿色圆形图标（中心径向渐变版） */
+.card-icon {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  display: flex;
+  margin-top: 25rpx;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at 35% 35%, #a5d6a7 0%, #81c784 40%, #66bb6a 100%);
+box-shadow: 0 8rpx 20rpx rgba(102, 187, 106, 0.35), 0 2rpx 6rpx rgba(129, 199, 132, 0.2);
+}
+
+.card-icon image {
+  width: 56rpx;
+  height: 56rpx;
+  filter: brightness(0) invert(1); /* 将图标变成白色 */
 }
 
 /* ================= 3. 最近识别区 ================= */
 .history-section {
   width: 100%;
-  padding-bottom: 40rpx;
+  margin-bottom: 60rpx;
 }
 
-.section-title-box {
+.section-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 24rpx;
+  margin-bottom: 32rpx;
 }
 
-.vertical-line {
-  width: 8rpx;
-  height: 32rpx;
-  background: #4CAF50;
-  border-radius: 4rpx;
-  margin-right: 16rpx;
-}
-
-.section-title-text {
+.section-title {
   font-size: 34rpx;
   font-weight: bold;
   color: #333333;
 }
 
-/* ================= 4. 识别记录卡片相关样式 ================= */
-
-/* 原有的空状态盒子基础样式 */
-.history-card {
-  width: 100%;
-  background: #ffffff;
-  border-radius: 24rpx;
-  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.03);
+.all-link {
   display: flex;
-  justify-content: center;
   align-items: center;
+  font-size: 26rpx;
+  color: #666666;
 }
 
-/* 空状态卡片专属内边距 */
-.empty-card {
-  padding: 80rpx 0;
+.all-link .arrow {
+  margin-left: 6rpx;
 }
 
-.empty-box {
+/* 空状态 */
+.empty-state {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  border-radius: 24rpx;
 }
 
 .empty-img {
-  width: 100rpx !important;
-  height: 100rpx !important;
-  opacity: 0.15;
-  filter: grayscale(100%);
+  height: 270rpx;
   margin-bottom: 20rpx;
 }
 
 .empty-text {
   font-size: 28rpx;
   color: #999999;
-}
-
-/* 有数据的卡片样式 (新加) */
-.data-card {
-  width: 100%;
-  background: #ffffff;
-  border-radius: 24rpx;
-  padding: 30rpx;
-  box-sizing: border-box;
-  margin-bottom: 24rpx;
-  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.03);
-}
-
-/* 卡片头部(始终显示) */
-.card-header {
-  display: flex;
-  align-items: center;
-}
-
-/* 左侧拍照图片缩略图 */
-.plant-thumb {
-  width: 130rpx;
-  height: 130rpx;
-  border-radius: 16rpx;
-  margin-right: 24rpx;
-  background-color: #f5f7f5;
-  flex-shrink: 0;
-}
-
-/* 中间基本信息 */
-.basic-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.plant-name {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #333333;
-  margin-bottom: 12rpx;
-}
-
-.plant-family {
-  font-size: 26rpx;
-  color: #666666;
-}
-
-/* 右侧箭头容器 */
-.arrow-wrap {
-  width: 60rpx;
-  height: 130rpx;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-/* 纯 CSS 绘制的箭头 */
-.arrow {
-  width: 16rpx;
-  height: 16rpx;
-  border-right: 4rpx solid #b2b2b2;
-  border-bottom: 4rpx solid #b2b2b2;
-  transition: transform 0.3s ease; /* 添加旋转动画过渡效果 */
-}
-
-/* 箭头向下 */
-.arrow-down {
-  transform: rotate(45deg);
-}
-
-/* 箭头向上 (展开状态) */
-.arrow-up {
-  transform: rotate(225deg);
-}
-
-/* 卡片详情区域(展开后显示) */
-.card-body {
-  margin-top: 30rpx;
-  padding-top: 24rpx;
-  border-top: 2rpx dashed #eeeeee;
-}
-
-.detail-block {
   margin-bottom: 20rpx;
+  text-align: center;
 }
 
-.detail-title {
-  font-size: 28rpx;
-  color: #333333;
-  font-weight: bold;
-  margin-bottom: 10rpx;
-}
-
-.detail-content {
-  font-size: 26rpx;
-  color: #666666;
-  line-height: 1.6;
-  /* 关键属性：保留文本内部的 \n 换行符 */
-  white-space: pre-wrap; 
-}
-/* ================= 未登录提示卡片样式 ================= */
-.login-prompt-card {
-  display: flex;             /* 开启 Flex 布局 */
-  flex-direction: column;    /* 让内部元素纵向排列 */
-  align-items: center;       /* 强制内部元素【水平居中】！ */
-  justify-content: center;   /* 垂直居中 */
-  padding: 80rpx 0;          /* 上下留白 */
-  width: 100%;               /* 撑满卡片宽度 */
-  box-sizing: border-box;
-}
-
-/* 确保内部的盒子也保持居中 */
-.login-prompt-card .empty-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;       /* 强制内部文字和按钮水平居中 */
-  width: 100%;
-}
-
-/* 🟢 修改点 1：提示文字完全按照图二的样式（浅灰、30rpx、下边距40rpx） */
-.login-prompt-card .empty-text {
-  font-size: 30rpx;          /* 从 26rpx 改大到图二的 30rpx */
-  color: #999999;            /* 从深灰 #666 改为图二的浅灰 #999 */
-  margin-bottom: 40rpx;      /* 距离底部按钮的间距从 30rpx 改为 40rpx */
-  text-align: center;        /* 确保文字本身居中对齐 */
-}
-
-/* 🟢 修改点 2：登录按钮完全改成图二的绿色胶囊形状 */
+/* 登录按钮 */
 .login-button {
-  background-color: #07c160 !important; /* 强制改为微信主题绿（覆盖原来的 #f7f7f7 灰底） */
-  color: #ffffff !important;            /* 强制改为纯白文字（覆盖原来的 #333 黑字） */
-  width: 60% !important;                /* 宽度修改为图二的 60% */
-  border-radius: 50rpx;                 /* 从小圆角 12rpx 改为大圆角（胶囊形状） 50rpx */
-  font-size: 32rpx;                     /* 按钮字体大小 */
-  font-weight: 500;                     /* 稍微去掉了原来厚重的 bold 加粗，更清爽 */
-  
-  /* 调整按钮的高度和内边距，使其更饱满 */
-  height: auto;                         /* 去掉之前固定的 72rpx 高度 */
-  line-height: normal;                  /* 重置行高 */
-  padding: 20rpx 0;                     /* 用 padding 上下撑开按钮高度 */
-  
+  background-color: #66bb6a !important;
+  color: #ffffff !important;
+  width: 60% !important;
+  border-radius: 50rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+  padding: 18rpx 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -316,4 +261,113 @@
 
 .login-button::after {
   border: none;
+}
+
+/* 横向滚动历史列表 */
+.history-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.history-item {
+  display: inline-block;
+  width: 220rpx;
+  margin-right: 24rpx;
+  vertical-align: top;
+}
+
+.plant-img {
+  width: 220rpx;
+  height: 220rpx;
+  border-radius: 20rpx;
+  margin-bottom: 16rpx;
+  background-color: #f5f7f5;
+}
+
+.plant-name-cn {
+  display: block;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 8rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plant-name-en {
+  display: block;
+  font-size: 22rpx;
+  color: #999999;
+  margin-bottom: 8rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-style: italic;
+}
+
+.time-text {
+  display: block;
+  font-size: 20rpx;
+  color: #bbbbbb;
+}
+
+/* ================= 4. 促销横幅 ================= */
+.promo-banner {
+  width: 100%;
+  height: 280rpx;
+  background: linear-gradient(135deg, #f0f9f0 0%, #e8f5e8 100%);
+  border-radius: 24rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40rpx;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+}
+
+.banner-left {
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+}
+
+.promo-title {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #2e7d32;
+  margin-bottom: 12rpx;
+}
+
+.promo-subtitle {
+  font-size: 28rpx;
+  color: #43a047;
+  margin-bottom: 32rpx;
+}
+
+.go-shop-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 200rpx;
+  height: 64rpx;
+  background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+  border-radius: 32rpx;
+  font-size: 26rpx;
+  color: #ffffff;
+  box-shadow: 0 4rpx 12rpx rgba(102, 187, 106, 0.3);
+}
+
+.go-shop-btn .arrow {
+  margin-left: 6rpx;
+}
+
+/* 右侧植物图片（用image标签实现） */
+.banner-right {
+  position: absolute;
+  width: 100%;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
 }
