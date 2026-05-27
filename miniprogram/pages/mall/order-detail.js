@@ -48,7 +48,7 @@ Page({
   },
 
   goToPay() {
-    wx.navigateTo({
+    wx.redirectTo({
       url: `/pages/mall/payment?orderId=${this.data.orderId}`
     });
   }

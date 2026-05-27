@@ -83,3 +83,40 @@
   align-items: center;
   justify-content: center;
 } 
+
+/* 在原有样式后追加以下内容 */
+.address-actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+}
+
+.address-actions .textarea {
+  flex: 1;
+  height: 160rpx;        /* 保持原高度 */
+}
+
+.map-btn {
+  height: 80rpx;
+  padding: 0 24rpx;
+  background: #f0f0f0;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: #333;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 4rpx;      /* 与 textarea 顶部对齐微调 */
+}
+
+.map-btn:active {
+  background: #e5e5e5;
+}
+
+.map-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 8rpx;
+}

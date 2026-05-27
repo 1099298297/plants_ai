@@ -46,7 +46,7 @@ Page({
       // 格式化页面数据
       const formatProduct = {
         ...product,
-        images: product.image ? [product.image] : [],
+        images: Array.isArray(product.image) ? product.image : (product.image ? [product.image] : []),
         stock: product.stock || 0,
         details: [
           { label: '商品编号', value: 'SP' + product.id },
@@ -122,6 +122,7 @@ Page({
 
   addToCartWithSpec(spec, qty = 1) {
     const p = this.data.product;
+    console.log(p);
     let cart = wx.getStorageSync('cart') || [];
   
     // 🔥 查找：同商品 ID + 同规格 spec
@@ -137,7 +138,7 @@ Page({
         id: p.id,
         name: p.name,
         price: p.price,
-        image: p.images[0],
+        image: [p.images[0]],
         spec: spec,
         quantity: qty,
         selected: false
@@ -154,7 +155,7 @@ Page({
       id: p.id,
       name: p.name,
       price: p.price,
-      image: p.images[0],
+      image: [p.images[0]],
       spec: spec,
       quantity: qty,
       selected: true
@@ -207,7 +208,7 @@ Page({
     let historyList = wx.getStorageSync('browseHistory') || [];
     historyList = historyList.filter(item => String(item.id) !== String(productId));
     historyList.unshift({
-      id: product.id, name: product.name, price: product.price, image: product.image, browseTime: new Date().toLocaleString()
+      id: product.id, name: product.name, price: product.price, image: Array.isArray(product.image) ? (product.image[0] || '') : product.image, browseTime: new Date().toLocaleString()
     });
     if (historyList.length > 50) historyList = historyList.slice(0, 50);
     wx.setStorageSync('browseHistory', historyList);

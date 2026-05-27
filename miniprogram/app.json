@@ -29,6 +29,11 @@
     "backgroundTextStyle": "light",
     "enablePullDownRefresh": true
   },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于地图选点获取收货地址"
+    }
+  },
   "tabBar": {
     "color": "#999999",
     "selectedColor": "#07c160",

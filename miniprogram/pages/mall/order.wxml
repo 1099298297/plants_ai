@@ -16,7 +16,7 @@
       <!-- 商品列表 -->
       <view class="goods-container">
         <view class="goods-item" wx:for="{{item.items}}" wx:key="productId">
-          <image src="{{item.image}}" mode="aspectFill"></image>
+          <image src="{{item.image[0]}}" mode="aspectFill"></image>
           <view class="goods-info">
             <text class="name">{{item.name}}</text>
             <text class="spec" wx:if="{{item.spec}}">{{item.spec}}</text>

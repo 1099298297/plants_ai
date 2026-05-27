@@ -1,22 +1,24 @@
 <view class="container">
 
-<!-- 地址卡片 -->
-<view class="card address-card" bindtap="goSelectAddress">
-  <view class="address-inner" wx:if="{{hasAddress}}">
-    <view class="address-top">
+  <view class="card address-card" bindtap="goSelectAddress">
+  <image class="address-bg-img" src="/images/mall/local.png" mode="widthFix"></image>
+  
+  <view class="address-text-area" wx:if="{{hasAddress}}">
+    <view class="address-row">
       <text class="name">{{address.name}}</text>
       <text class="phone">{{address.phone}}</text>
-      <text class="default-tag" wx:if="{{address.isDefault}}">默认</text>
+      <view class="default-tag" wx:if="{{address.isDefault}}">默认</view>
     </view>
-    <view class="address-detail">
+    <view class="address-detail-text">
       {{address.province}}{{address.city}}{{address.district}}{{address.detail}}
     </view>
-    <image class="arrow" src="/images/icons/arrow-right.png"></image>
   </view>
 
-  <view class="no-address-inner" wx:else>
-    <text>请选择收货地址</text>
-    <image class="arrow" src="/images/icons/arrow-right.png"></image>
+  <view class="address-text-area" wx:else>
+    <view class="address-row">
+      <text class="name placeholder-text">请添加收货地址</text>
+    </view>
+    <view class="address-detail-text placeholder-sub">点击选择地址</view>
   </view>
 </view>
 
@@ -25,7 +27,7 @@
   <view class="section-title">商品信息</view>
 
   <view class="goods-item" wx:for="{{cartList}}" wx:key="id">
-    <image src="{{item.image}}" mode="aspectFill"></image>
+    <image src="{{item.image[0]}}" mode="aspectFill"></image>
     <view class="goods-info">
       <text class="name">{{item.name}}</text>
       <text class="spec" wx:if="{{item.spec}}">{{item.spec}}</text>

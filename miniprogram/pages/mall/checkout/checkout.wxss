@@ -12,49 +12,91 @@
   margin-bottom: 20rpx;
 }
 
-/* 地址 */
+/* 卡片外层 */
 .address-card {
-  position: relative;
+  position: relative;                /* 作为绝对定位的锚点 */
+  width: 100%;
+  max-width: 2000rpx;
+  margin: 0 auto;
+  border: 1rpx solid rgba(156, 189, 157, 0.6);
+  border-radius: 36rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  background: #fff;
+  padding: 0;
 }
 
-.address-top {
+/* 背景图片：撑开卡片高度，宽度100% */
+.address-bg-img {
+  width: 100%;
+  height: auto;          /* 由 mode="widthFix" 和原图比例自动计算 */
+  display: block;        /* 消除图片底部空隙 */
+}
+
+/* 文字覆盖层：绝对定位，覆盖整个卡片 */
+.address-text-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  padding: 24rpx 100rpx 24rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* 其他文字样式保持不变 */
+.address-row {
   display: flex;
   align-items: center;
-  gap: 20rpx;
-  margin-bottom: 10rpx;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-bottom: 8rpx;
 }
 
-.address-card .name {
-  font-size: 28rpx;
-  font-weight: bold;
-  color: #333;
+.name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1b3a1b;
 }
 
-.address-card .phone {
+.phone {
   font-size: 26rpx;
-  color: #666;
+  color: #5e6b5e;
+  font-variant-numeric: tabular-nums;
 }
 
+/* 默认标签：极细绿框 */
 .default-tag {
-  background: #07c160;
-  color: #fff;
-  font-size: 22rpx;
-  padding: 4rpx 10rpx;
-  border-radius: 6rpx;
+  border: 1rpx solid #4caf50;
+  background: transparent;
+  color: #4caf50;
+  font-size: 20rpx;
+  padding: 2rpx 16rpx;
+  border-radius: 20rpx;
+  line-height: 1.6;
+  font-weight: 500;
 }
 
-.address-detail {
+/* 详细地址文本 */
+.address-detail-text {
   font-size: 26rpx;
-  color: #666;
-  line-height: 1.4;
+  color: #444;
+  line-height: 1.5;
 }
 
-.no-address-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #999;
-  font-size: 28rpx;
+/* 占位文字 */
+.placeholder-text {
+  color: #5a705a;
+  font-size: 30rpx;
+}
+
+.placeholder-sub {
+  color: #7b917b;
+  font-size: 24rpx;
 }
 
 .arrow {
@@ -67,6 +109,10 @@
 }
 
 /* 商品 */
+.goods-card {
+  margin-top: 20rpx;
+}
+
 .section-title {
   font-size: 30rpx;
   font-weight: bold;

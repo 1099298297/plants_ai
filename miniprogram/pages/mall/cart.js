@@ -25,6 +25,7 @@ Page({
   async loadCartItems() {
     try {
       let cartItems = wx.getStorageSync('cart') || []
+     console.log(cartItems);
       cartItems = cartItems.map(item => {
         if (!item.uid) item.uid = this.generateUid()
         return item

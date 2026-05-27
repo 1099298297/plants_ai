@@ -11,7 +11,7 @@
           <checkbox checked="{{item.selected}}" />
         </checkbox-group>
       </view>
-      <image class="product-image" src="{{item.image}}" mode="aspectFill"></image>
+      <image class="product-image" src="{{item.image[0]}}" mode="aspectFill"></image>
       <view class="product-info">
         <text class="product-name">{{item.name}}</text>
         <text class="spec" wx:if="{{item.spec}}">{{item.spec}}</text>

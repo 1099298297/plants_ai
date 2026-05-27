@@ -1,18 +1,21 @@
-.container {
-  padding: 20rpx;
+/* mall.wxss */
+
+/* 页面撑满全屏，禁止整体滚动 */
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   background: #f5f5f5;
-  min-height: 100vh;
+  overflow: hidden;
 }
 
+/* ---------- 搜索栏 ---------- */
 .search-bar {
-  padding: 20rpx 0;
+  height: 104rpx;
   background: #fff;
-  /* 👇 替换这两行 */
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .search-input-wrap {
@@ -22,6 +25,7 @@
   border-radius: 32rpx;
   padding: 0 20rpx;
   margin: 0 20rpx;
+  flex: 1;
 }
 
 .search-icon {
@@ -42,17 +46,32 @@
   font-size: 28rpx;
 }
 
-/* 搜索建议和历史记录样式 */
+.search-btn {
+  background: #4CAF50;
+  color: #fff;
+  font-size: 26rpx;
+  width: 80rpx;
+  height: 50rpx;
+  line-height: 50rpx;
+  text-align: center;
+  border-radius: 25rpx;
+  margin-left: 10rpx;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* 搜索建议与历史记录 */
 .search-suggestions {
   background: #fff;
   border-radius: 0 0 16rpx 16rpx;
-  margin: 0 20rpx;
   box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
   position: absolute;
   top: 104rpx;
   left: 0;
   right: 0;
   z-index: 99;
+  max-height: 60vh;
+  overflow-y: auto;
 }
 
 .suggestion-list {
@@ -80,20 +99,6 @@
 
 .search-history {
   padding: 20rpx;
-}
-
-.search-btn {
-  background: #4CAF50;
-  color: #fff;
-  font-size: 26rpx;
-  width: 80rpx;
-  height: 50rpx;
-  line-height: 50rpx; /* 行高=高度 → 垂直居中 */
-  text-align: center;
-  border-radius: 25rpx;
-  margin-left: 10rpx;
-  white-space: nowrap;
-  flex-shrink: 0;
 }
 
 .history-header {
@@ -134,68 +139,52 @@
   opacity: 0.5;
 }
 
-.category-list {
+/* ---------- 主体左右分栏 ---------- */
+.main-body {
+  flex: 1;
   display: flex;
-  padding: 20rpx 0;
-  background: #fff;
-  margin-bottom: 20rpx;
-  margin-top: 110rpx; /* 👈 加这一句 */
+  overflow: hidden;
+}
+
+/* 左侧类别 */
+.category-sidebar {
+  width: 160rpx;
+  background: #f8f8f8;
+  height: 100%;
 }
 
 .category-item {
-  flex: 1;
+  padding: 30rpx 10rpx;
+  font-size: 26rpx;
+  color: #555;
   text-align: center;
-  font-size: 28rpx;
-  color: #666;
-  position: relative;
-  padding: 10rpx 0;
+  border-left: 4rpx solid transparent;
 }
 
 .category-item.active {
+  background: #fff;
   color: #4CAF50;
   font-weight: bold;
+  border-left-color: #4CAF50;
 }
 
-.category-item.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40rpx;
-  height: 4rpx;
-  background: #4CAF50;
-  border-radius: 2rpx;
+/* 右侧商品区域 */
+.goods-area {
+  flex: 1;
+  height: 100%;
+  background: #fff;
+  padding: 0 16rpx;
 }
 
-.content-area {
-  position: relative;
-  min-height: 200rpx;
+/* 分类标题 */
+.section-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  padding: 24rpx 8rpx 16rpx;
 }
 
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40rpx;
-}
-
-.loading-spinner {
-  width: 40rpx;
-  height: 40rpx;
-  border: 4rpx solid #f3f3f3;
-  border-top: 4rpx solid #4CAF50;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 20rpx;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
+/* 商品网格（两列） */
 .product-list {
   display: flex;
   flex-wrap: wrap;
@@ -205,28 +194,21 @@
 .product-item {
   width: calc(50% - 20rpx);
   margin: 10rpx;
+  margin-bottom: 30rpx;
   background: #fff;
   border-radius: 12rpx;
   overflow: hidden;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
 }
 
 .product-item image {
   width: 100%;
+  border-radius: 10rpx;
   height: 345rpx;
 }
 
 .product-info {
   padding: 20rpx;
-  position: relative;
-}
-
-/* 价格 + 标签 同行居中 */
-.price-row {
-  display: flex;
-  align-items: center;
-  gap: 10rpx;
-  margin-top: 6rpx;
 }
 
 .product-name {
@@ -239,68 +221,29 @@
   overflow: hidden;
 }
 
+.price-row {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
 .product-price {
   font-size: 32rpx;
   color: #e64340;
   font-weight: bold;
-  vertical-align: middle;
 }
 
 .jump-tag {
   display: inline-block;
   font-size: 20rpx;
   padding: 2rpx 7rpx;
-  line-height: 1.2;
-  background: #ffffff;
+  background: #fff;
   color: #e64340;
   border: 1rpx solid #e64340;
   border-radius: 6rpx;
-  vertical-align: middle;
-  margin-left: 8rpx;
 }
 
-.match-tag {
-  position: absolute;
-  top: 20rpx;
-  right: 20rpx;
-}
-
-.match-type {
-  font-size: 20rpx;
-  padding: 4rpx 12rpx;
-  border-radius: 20rpx;
-  color: #fff;
-}
-
-.match-type.exact {
-  background: #4CAF50;
-}
-
-.match-type.name {
-  background: #2196F3;
-}
-
-.match-type.tag {
-  background: #FF9800;
-}
-
-.match-type.description {
-  background: #9C27B0;
-}
-
-.match-type.category {
-  background: #607D8B;
-}
-
-.search-result-count {
-  width: 100%;
-  padding: 20rpx;
-  font-size: 28rpx;
-  color: #666;
-  background: #fff;
-  margin-bottom: 20rpx;
-}
-
+/* 无结果 */
 .no-result {
   width: 100%;
   padding: 100rpx 0;
@@ -326,4 +269,28 @@
   font-size: 24rpx;
   color: #999;
   margin-top: 10rpx;
+}
+
+/* 加载动画 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+}
+
+.loading-spinner {
+  width: 40rpx;
+  height: 40rpx;
+  border: 4rpx solid #f3f3f3;
+  border-top: 4rpx solid #4CAF50;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20rpx;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
