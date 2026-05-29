@@ -175,6 +175,14 @@ Page({
     this.setData({
       activeTab: tab
     })
+    if (tab === 'reminder') {
+      wx.showModal({
+        title: '提示',
+        content: '养护提醒功能正在开发中',
+        showCancel: false,
+        confirmText: '知道了'
+      })
+    }
   },
 
   showAddReminder() {
