@@ -62,7 +62,7 @@
             wx:key="category"
             bindtap="onCategoryTap"
             data-category="{{item.category}}"
-            data-index="{{index}}">   <!-- 新增 data-index -->
+            data-index="{{index}}">
         {{item.name}}
       </view>
     </scroll-view>
@@ -112,5 +112,18 @@
         <text class="no-result-tip">换个关键词试试吧</text>
       </view>
     </scroll-view>
+  </view>
+
+  <!-- 悬浮购物车按钮 -->
+  <view class="cart-fab" bindtap="goToCart">
+    <image
+      class="cart-icon-img"
+      src="/images/icons/cart-white.png"
+      mode="aspectFit"
+    ></image>
+
+    <view wx:if="{{cartCount > 0}}" class="cart-badge">
+      {{cartCount > 99 ? '99+' : cartCount}}
+    </view>
   </view>
 </view>

@@ -1,5 +1,4 @@
 // mall.js
-//注意：当前类别是计算出来的，商品是一次性加载出来的。如果商品过多可以修改为懒加载！
 Page({
   data: {
     allProducts: [],        // 全量商品
@@ -13,6 +12,7 @@ Page({
     suggestions: [],
     isLoading: false,
     isSearching: false,
+    cartCount: 0,           // 购物车商品总数量（角标）
   },
 
   // 类别中文映射
@@ -25,12 +25,14 @@ Page({
   onLoad: function (options) {
     this.loadAllProducts();
     this.loadSearchHistory();
+    this.updateCartCount();   // 加载购物车数量
   },
 
   onShow: function () {
+    this.updateCartCount();   // 每次显示都更新购物车角标（从详情页加入购物车后返回）
     const app = getApp();
     const keyword = app.globalData.homeSearchKeyword;
-  
+
     if (keyword && keyword.trim() !== '') {
       // 来自首页的搜索词：清空标记，进入搜索模式
       app.globalData.homeSearchKeyword = '';
@@ -59,26 +61,26 @@ Page({
     const db = wx.cloud.database();
     this.setData({ isLoading: true });
     try {
-        const res = await db.collection('products').limit(500).get();
-        let allProducts = res.data || [];
-        // 兼容旧数据：将 image 字段统一转为数组
-        allProducts = allProducts.map(product => {
-            if (typeof product.image === 'string') {
-                product.image = product.image ? [product.image] : [];
-            }
-            // 如果已经是数组，确保至少是空数组
-            if (!Array.isArray(product.image)) {
-                product.image = [];
-            }
-            return product;
-        });
-        this.setData({ allProducts });
-        getApp().globalData.allProducts = allProducts;
-        this.filterAndGroup();
+      const res = await db.collection('products').limit(500).get();
+      let allProducts = res.data || [];
+      // 兼容旧数据：将 image 字段统一转为数组
+      allProducts = allProducts.map(product => {
+        if (typeof product.image === 'string') {
+          product.image = product.image ? [product.image] : [];
+        }
+        // 如果已经是数组，确保至少是空数组
+        if (!Array.isArray(product.image)) {
+          product.image = [];
+        }
+        return product;
+      });
+      this.setData({ allProducts });
+      getApp().globalData.allProducts = allProducts;
+      this.filterAndGroup();
     } catch (err) {
-        console.error("加载商品失败", err);
+      console.error("加载商品失败", err);
     } finally {
-        this.setData({ isLoading: false });
+      this.setData({ isLoading: false });
     }
   },
 
@@ -139,8 +141,8 @@ Page({
           top: rect.top - scrollRect.top // 初始 scrollTop=0 时的相对位置
         }));
         // 如果当前 activeCategory 不存在于位置列表，则默认第一个
-        if (this.sectionPositions.length > 0 && 
-            !this.sectionPositions.find(p => p.category === this.data.activeCategory)) {
+        if (this.sectionPositions.length > 0 &&
+          !this.sectionPositions.find(p => p.category === this.data.activeCategory)) {
           this.setData({ activeCategory: this.sectionPositions[0].category });
         }
       });
@@ -180,7 +182,7 @@ Page({
     });
   },
 
-  // ========== 搜索相关（与之前逻辑一致） ==========
+  // ========== 搜索相关 ==========
   onSearchInput(e) {
     const val = e.detail.value.trim();
     this.setData({ searchValue: val });
@@ -267,7 +269,38 @@ Page({
     this.setData({ searchHistory: [] });
   },
 
-  // 商品详情 / 抖音跳转（保持不变）
+  // ========== 购物车角标相关 ==========
+  // 更新购物车数量角标（从 storage 中读取 cart 并累加 quantity）
+  updateCartCount() {
+    try {
+      const cart = wx.getStorageSync('cart') || [];
+      let totalCount = 0;
+      cart.forEach(item => {
+        totalCount += (item.quantity || 1);
+      });
+      this.setData({ cartCount: totalCount });
+    } catch (e) {
+      console.error('获取购物车数量失败', e);
+      this.setData({ cartCount: 0 });
+    }
+  },
+
+  // 跳转购物车页面（根据实际路径修改）
+  goToCart() {
+    wx.navigateTo({
+      url: '/pages/mall/cart',
+      fail: () => {
+        wx.switchTab({
+          url: '/pages/mall/cart',
+          fail: () => {
+            wx.showToast({ title: '购物车页面暂不可用', icon: 'none' });
+          }
+        });
+      }
+    });
+  },
+
+  // ========== 商品跳转 ==========
   navigateToDetail(e) {
     const productId = e.currentTarget.dataset.id;
     const douyinLink = e.currentTarget.dataset.douyinlink;
@@ -296,6 +329,7 @@ Page({
     }
   },
 
+  // ========== 分享 ==========
   onShareAppMessage() {
     return {
       title: '精选植物和园艺工具',

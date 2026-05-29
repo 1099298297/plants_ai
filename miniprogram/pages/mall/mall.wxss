@@ -294,3 +294,78 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* 悬浮购物车按钮（绿色高级版） */
+.cart-fab {
+  position: fixed;
+  left: 30rpx;
+  bottom: 50rpx;
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+
+  /* 绿色渐变 */
+  background: linear-gradient(135deg, #5BE37D 0%, #2DBE60 100%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* 阴影 */
+  box-shadow:
+    0 12rpx 30rpx rgba(45, 190, 96, 0.35),
+    inset 0 4rpx 10rpx rgba(255,255,255,0.25);
+
+  z-index: 999;
+
+  /* 毛玻璃边缘感 */
+  border: 2rpx solid rgba(255,255,255,0.25);
+
+  transition: all 0.2s ease;
+}
+
+/* 点击效果 */
+.cart-fab:active {
+  transform: scale(0.92);
+}
+
+/* 购物车图标 */
+.cart-icon {
+  font-size: 52rpx;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* 数量角标 */
+.cart-badge {
+  position: absolute;
+  top: -6rpx;
+  right: -2rpx;
+
+  min-width: 38rpx;
+  height: 38rpx;
+  padding: 0 10rpx;
+
+  border-radius: 38rpx;
+
+  background: linear-gradient(135deg, #FF6B6B, #FF3B30);
+
+  color: #fff;
+  font-size: 22rpx;
+  font-weight: 600;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 4rpx 12rpx rgba(255, 59, 48, 0.35);
+
+  border: 3rpx solid #fff;
+
+  box-sizing: border-box;
+}
+
+.cart-icon-img{
+  width: 60rpx;
+  height: 60rpx;
+}

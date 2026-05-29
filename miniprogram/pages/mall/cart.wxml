@@ -32,7 +32,7 @@
   <view class="empty-cart" wx:else>
     <image src="/images/icons/empty-cart.png" mode="aspectFit"></image>
     <text>购物车还是空的</text>
-    <navigator url="/pages/mall/mall" class="go-shopping">去逛逛</navigator>
+    <navigator url="/pages/mall/mall" open-type="switchTab" class="go-shopping">去逛逛</navigator>
   </view>
 
   <!-- 底部结算栏 -->
