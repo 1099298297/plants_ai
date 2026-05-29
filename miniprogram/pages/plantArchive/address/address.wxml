@@ -1,0 +1,64 @@
+<view class="container">
+
+<!-- 新增地址 -->
+<view class="top-bar">
+
+  <view
+    class="location-btn"
+    bindtap="chooseLocation"
+  >
+    + 选择新地址
+  </view>
+
+</view>
+
+<!-- 地址列表 -->
+<view class="address-list">
+
+  <view
+    class="address-item"
+    wx:for="{{addressList}}"
+    wx:key="index"
+  >
+
+    <!-- 地址内容 -->
+    <view
+      class="address-content"
+      bindtap="selectAddress"
+      data-item="{{item}}"
+    >
+
+      <text class="address-text">
+        {{item.address}}
+      </text>
+
+    </view>
+
+    <!-- 右侧按钮 -->
+    <view class="item-actions">
+      <view class="edit-btn" bindtap="editAddress" data-index="{{index}}">
+        编辑
+      </view>
+
+      <view class="delete-btn" bindtap="deleteAddress" data-index="{{index}}">
+        删除
+      </view>
+    </view>
+
+  </view>
+
+</view>
+
+<!-- 空状态 -->
+<view
+  wx:if="{{addressList.length === 0}}"
+  class="empty-box"
+>
+
+  <text class="empty-text">
+    暂无地址
+  </text>
+
+</view>
+
+</view>

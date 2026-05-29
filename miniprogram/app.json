@@ -18,6 +18,8 @@
     "pages/voiceChat/voiceChat",
     "pages/plantArchive/plantArchive",
     "pages/plantArchive/addPlant",
+    "pages/plantArchive/address/address",
+    "pages/plantArchive/editAddress/editAddress",
     "pages/plantArchive/plantDetail",
     "pages/login/login"
   ],
@@ -34,6 +36,9 @@
       "desc": "你的位置信息将用于地图选点获取收货地址"
     }
   },
+  "requiredPrivateInfos": [
+    "chooseLocation"
+  ],
   "tabBar": {
     "color": "#999999",
     "selectedColor": "#07c160",

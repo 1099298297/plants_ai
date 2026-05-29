@@ -1,0 +1,21 @@
+<view class="container">
+
+<view class="card">
+
+  <textarea
+    class="textarea"
+    value="{{address}}"
+    bindinput="onInput"
+    placeholder="请输入地址"
+  />
+
+</view>
+
+<button
+  class="save-btn"
+  bindtap="saveAddress"
+>
+  保存
+</button>
+
+</view>
