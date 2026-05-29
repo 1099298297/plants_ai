@@ -169,7 +169,7 @@ Page({
       const response = await new Promise((resolve, reject) => {
         const requestData = {
           // ⚠️ 核心修改 1：必须换成通义千问的视觉模型（VL）才能识别图片
-          "model": "qwen-vl-plus", // 也可以用 "qwen-vl-max"（更聪明但稍贵/慢一点）
+          "model": "qwen-vl-max", // 快速便宜不准确的模型 qwen-v1-plus也可以用 "qwen-vl-max"（更聪明但稍贵/慢一点）
           messages: [
             {
               role: 'user',

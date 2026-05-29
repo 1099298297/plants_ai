@@ -1,86 +1,95 @@
 Page({
   data: {
-    defaultAvatar: '/images/icons/default-avatar.png', // 替换为你项目的默认头像
-    avatarUrl: '', // 最终头像
-    nickName: '',  // 最终昵称
-    isAvatarChanged: false // 标记是否选了新头像
+    defaultAvatar: '/images/icons/default-avatar.png',
+    avatarUrl: '',
+    nickName: '',
+    isAvatarChanged: false,
+    focusNickname: false
   },
 
   onLoad() {
     const openid = wx.getStorageSync('user_openid');
     if (openid) {
       this.goBack();
+      return;
+    }
+    // 进入页面自动聚焦昵称输入框
+    this.setData({ focusNickname: true });
+  },
+
+  // 实时捕获昵称输入（包括点击“使用微信昵称”）
+  onNicknameInput(e) {
+    const value = e.detail.value;
+    if (value !== undefined) {
+      this.setData({ nickName: value });
     }
   },
 
-  // 1. 获取头像回调
+  // 失去焦点时再次确保捕获（兜底）
+  onNicknameBlur(e) {
+    const value = e.detail.value;
+    if (value && value !== this.data.nickName) {
+      this.setData({ nickName: value });
+    }
+  },
+
+  // 头像选择
   onChooseAvatar(e) {
     const { avatarUrl } = e.detail;
     this.setData({
       avatarUrl,
       isAvatarChanged: true
     });
+    // 可选：选完头像后再次聚焦昵称（方便下一步）
+    // this.setData({ focusNickname: true });
   },
 
-  // 2. 获取昵称回调（核心修复：防止一闪而过）
-  onNicknameChange(e) {
-    const value = e.detail.value;
-    // 只有当值存在，且发生真实改变时，才进行 setData，避免空值覆盖
-    if (value && value !== this.data.nickName) {
-      this.setData({
-        nickName: value
-      });
-    }
-  },
-
-  // 3. 点击授权并登录
   async handleLogin() {
+    // 🔥 关键：直接从 DOM 获取昵称输入框的值
+    let actualNickName = '';
+    const query = wx.createSelectorQuery();
+    query.select('.nickname-input').fields({ properties: ['value'] }, (res) => {
+      actualNickName = res ? res.value : '';
+    });
+    await new Promise(resolve => query.exec(resolve));
+  
     let { avatarUrl, nickName, isAvatarChanged } = this.data;
-
-    // 表单校验
-    if (!avatarUrl && !isAvatarChanged) {
-      return wx.showToast({ title: '请授权头像', icon: 'none' });
+    if (actualNickName && actualNickName.trim()) {
+      nickName = actualNickName;
+      if (nickName !== this.data.nickName) {
+        this.setData({ nickName }); // 同步更新
+      }
     }
-    if (!nickName.trim()) {
-      return wx.showToast({ title: '请输入或授权昵称', icon: 'none' });
+  
+    // 校验昵称
+    if (!nickName || !nickName.trim()) {
+      this.setData({ focusNickname: true });
+      wx.showToast({ title: '请授权微信昵称', icon: 'none', duration: 1500 });
+      return;
     }
-
+  
+    // 以下代码与你之前相同...
     wx.showLoading({ title: '安全登录中...', mask: true });
-
     try {
       let finalAvatarUrl = avatarUrl;
-      // 把微信临时头像上传到云开发存储，换取永久链接
-      if (isAvatarChanged) {
-        const cloudPath = `user-avatars/${Date.now()}-${Math.floor(Math.random(0, 1) * 1000)}.png`;
-        const uploadRes = await wx.cloud.uploadFile({
-          cloudPath: cloudPath,
-          filePath: avatarUrl
-        });
-        finalAvatarUrl = uploadRes.fileID; 
+      if (isAvatarChanged && avatarUrl) {
+        const cloudPath = `user-avatars/${Date.now()}-${Math.floor(Math.random() * 1000)}.png`;
+        const uploadRes = await wx.cloud.uploadFile({ cloudPath, filePath: avatarUrl });
+        finalAvatarUrl = uploadRes.fileID;
+      } else {
+        finalAvatarUrl = this.data.defaultAvatar;
       }
-
-      // 调用登录云函数
       const res = await wx.cloud.callFunction({ name: 'login' });
       const openid = res.result.openid;
-      
       if (openid) {
-        // 存入凭证和信息
         wx.setStorageSync('user_openid', openid);
-        wx.setStorageSync('userInfo', {
-          nickName: nickName,
-          avatarUrl: finalAvatarUrl
-        });
-
+        wx.setStorageSync('userInfo', { nickName: nickName.trim(), avatarUrl: finalAvatarUrl });
         wx.hideLoading();
         wx.showToast({ title: '登录成功', icon: 'success' });
-        
-        setTimeout(() => {
-          this.goBack();
-        }, 1000);
+        setTimeout(() => this.goBack(), 1000);
       } else {
         throw new Error('获取身份失败');
       }
-
     } catch (err) {
       wx.hideLoading();
       wx.showToast({ title: '登录出错，请重试', icon: 'none' });
@@ -88,7 +97,6 @@ Page({
     }
   },
 
-  // 返回上一页
   goBack() {
     const pages = getCurrentPages();
     if (pages.length > 1) {
