@@ -1,4 +1,9 @@
+<!-- addPlant.wxml -->
 <view class="container">
+<!-- 编辑模式提示（可选） -->
+<view wx:if="{{isEdit}}" class="edit-tip">
+    <text>✏️ 正在编辑植物档案</text>
+  </view>
 
 <!-- 图片 -->
 <view class="form-item">

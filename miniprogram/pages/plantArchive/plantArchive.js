@@ -1,91 +1,62 @@
+// pages/plantArchive/plantArchive.js
 const app = getApp()
 
 Page({
   data: {
     plants: [],
-    isLoggedIn: false // 新增：用来控制页面显示“未登录”还是“植物列表”
+    isLoggedIn: false
   },
 
-  onLoad: function() {
+  onLoad() {
     this.checkLoginAndLoadData()
   },
 
-  onShow: function() {
+  onShow() {
     this.checkLoginAndLoadData()
   },
 
-// ================= 核心修复：更强大的检查登录逻辑 =================
-checkLoginAndLoadData() {
-  // 1. 兼容获取底层的 openid（防止之前测试时存成了别的名字）
-  const openid = wx.getStorageSync('user_openid') || wx.getStorageSync('openid') || wx.getStorageSync('userOpenId');
-  
-  // 2. 获取表面的 用户资料（头像昵称）
-  const userInfo = wx.getStorageSync('userInfo');
-
-  console.log("【档案页状态检查】", "openid:", openid, "userInfo:", userInfo);
-
-  // 3. 【关键】只要有 openid 或者有 userInfo，我们就跟“我的”页面一样，认为已经登录了！
-  if (openid || userInfo) {
-    
-    this.setData({ isLoggedIn: true });
-    
-    // 只有拿到了真实的 openid，才去查数据库
-    if (openid) {
-      this.loadPlants(openid);
+  checkLoginAndLoadData() {
+    const openid = wx.getStorageSync('user_openid') || wx.getStorageSync('openid') || wx.getStorageSync('userOpenId')
+    const userInfo = wx.getStorageSync('userInfo')
+    if (openid || userInfo) {
+      this.setData({ isLoggedIn: true })
+      if (openid) this.loadPlants(openid)
     } else {
-      // 极端异常情况保护：如果只存了头像没存openid，清空列表但保持登录界面
-      this.setData({ plants: [] }); 
+      this.setData({ isLoggedIn: false, plants: [] })
     }
-    
-  } else {
-    // 啥凭证都没有，彻底没登录，显示去登录的按钮
-    this.setData({ isLoggedIn: false, plants: [] });
-  }
-},
-// ===============================================================
-
-  // ================= 新增：点击去登录按钮 =================
-  goToLogin() {
-    wx.navigateTo({
-      url: '/pages/login/login'
-    })
   },
 
-  // 修改：接收真实的 openid 进行查询
-  async loadPlants(realOpenid) {
+  async loadPlants(openid) {
     try {
       const db = wx.cloud.database()
       const res = await db.collection('user_plants')
-        .where({
-          _openid: realOpenid  // <--- 修复：使用传入的真实 openid 过滤！
-        })
+        .where({ _openid: openid })
         .orderBy('createTime', 'desc')
         .get()
-
-      this.setData({
-        plants: res.data
-      })
+      this.setData({ plants: res.data })
     } catch (err) {
-      console.error('加载植物列表失败：', err)
-      wx.showToast({
-        title: '加载失败',
-        icon: 'none'
-      })
+      console.error('加载失败', err)
     }
   },
 
+  // 添加植物
   onAddPlant() {
-    // 细节优化：如果你没登录，点右上角的“+”号直接带你去登录，省得进去了再拦截
     if (!this.data.isLoggedIn) {
-      wx.navigateTo({ url: '/pages/login/login' });
-      return;
+      wx.navigateTo({ url: '/pages/login/login' })
+      return
     }
-    
+    wx.navigateTo({ url: '/pages/plantArchive/addPlant' })
+  },
+
+  // 编辑植物（新增）
+  onEditPlant(e) {
+    const plant = e.currentTarget.dataset.plant
     wx.navigateTo({
-      url: '/pages/plantArchive/addPlant'
+      url: `/pages/plantArchive/addPlant?edit=true&id=${plant._id}`
     })
   },
 
+  // 查看详情（如果有点击卡片查看详情的需求）
   onPlantTap(e) {
     const plant = e.currentTarget.dataset.plant
     wx.navigateTo({
@@ -93,42 +64,43 @@ checkLoginAndLoadData() {
     })
   },
 
+  // 删除植物（优化版）
   async onDeletePlant(e) {
-    const plantId = e.currentTarget.dataset.id;
+    const plantId = e.currentTarget.dataset.id
     wx.showModal({
       title: '确认删除',
-      content: '确定要删除该植物档案吗？此操作不可恢复。',
+      content: '删除后该植物的所有养护提醒也会被清除，不可恢复。',
+      confirmColor: '#f44336',
       success: async (res) => {
         if (res.confirm) {
+          wx.showLoading({ title: '删除中...', mask: true })
           try {
-            const db = wx.cloud.database();
-            await db.collection('user_plants').doc(plantId).remove();
-            await db.collection('plant_reminders').where({ plantId: plantId }).remove();
-            wx.showToast({ title: '删除成功', icon: 'success' });
+            const db = wx.cloud.database()
+            // 删除植物档案
+            await db.collection('user_plants').doc(plantId).remove()
+            // 删除相关提醒
+            await db.collection('plant_reminders').where({ plantId }).remove()
+            // 清除本地定时器（如果有 reminder 工具）
+            // 假设你有 reminderManager
+            // const reminderManager = require('../../utils/reminder.js')
+            // reminderManager.clearRemindersByPlantId(plantId)
             
-            // 删除后重新加载，需要再传一次真实的 openid
-            const openid = wx.getStorageSync('user_openid');
-            this.loadPlants(openid); 
-            
+            wx.hideLoading()
+            wx.showToast({ title: '删除成功', icon: 'success' })
+            // 刷新列表
+            const openid = wx.getStorageSync('user_openid')
+            this.loadPlants(openid)
           } catch (err) {
-            wx.showToast({ title: '删除失败', icon: 'none' });
+            wx.hideLoading()
+            console.error('删除失败', err)
+            wx.showToast({ title: '删除失败', icon: 'none' })
           }
         }
       }
-    });
+    })
   },
 
-  // ================= 添加的分享功能代码 =================
-  onShareAppMessage: function () {
-    return {
-      title: '快来建立你的专属植物档案吧！', 
-      path: '/pages/plantArchive/plantArchive', 
-    }
-  },
-
-  onShareTimeline: function () {
-    return {
-      title: '快来建立你的专属植物档案吧！' 
-    }
+  goToLogin() {
+    wx.navigateTo({ url: '/pages/login/login' })
   }
 })

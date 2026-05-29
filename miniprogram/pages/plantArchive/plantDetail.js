@@ -1,3 +1,4 @@
+/* plantDetail.js */
 const app = getApp()
 const reminderManager = require('../../utils/reminder.js')
 

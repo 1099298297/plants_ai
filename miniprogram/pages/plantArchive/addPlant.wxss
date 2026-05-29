@@ -1,9 +1,20 @@
+/* addPlant.wxss */
 .container {
   padding: 30rpx;
   padding-bottom: 180rpx;
   background: #f7f8fa;
   min-height: 100vh;
   box-sizing: border-box;
+}
+
+.edit-tip {
+  text-align: center;
+  background-color: #E8F5E9;
+  color: #4CAF50;
+  padding: 16rpx;
+  border-radius: 30rpx;
+  margin-bottom: 30rpx;
+  font-size: 26rpx;
 }
 
 .form-item {

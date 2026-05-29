@@ -416,6 +416,7 @@ Page({
   goToAddPlant() {
     const imageUrl = this.data.tempImagePath;
     const plantName = this.data.plantType || '';
+    console.log(this.data)
 
     if (!imageUrl) {
       wx.showToast({ title: '没有图片可添加', icon: 'none' });

@@ -1,3 +1,4 @@
+<!-- plantDetail.wxml -->
 <view class="container">
   <view class="plant-header">
     <image class="plant-image" src="{{plant.tempImageUrl || '/images/empty.png'}}" mode="aspectFill"></image>
