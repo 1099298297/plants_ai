@@ -15,7 +15,7 @@
     <view class="tab-item {{activeTab === 'info' ? 'active' : ''}}" bindtap="switchTab" data-tab="info">
       <text>基本信息</text>
     </view>
-    <view class="tab-item {{activeTab === 'reminder' ? 'active' : ''}}" bindtap="switchTab" data-tab="reminder">
+    <view class="tab-item {{activeTab === 'reminder' ? 'active' : ''}}" bindtap="TempDialog" data-tab="reminder">
       <text>养护提醒</text>
     </view>
   </view>
