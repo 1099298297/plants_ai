@@ -44,7 +44,7 @@
         </view>
       </view>
       
-      <view class="action-card" bindtap="navigateToVoiceChat">
+      <view class="action-card" bindtap="navigateToChat">
         <view class="card-left">
           <text class="card-title">智能对话</text>
           <text class="card-subtitle">植物养护咨询</text>

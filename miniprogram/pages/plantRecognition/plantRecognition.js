@@ -1,3 +1,4 @@
+// plantRecognition.js
 Page({
   data: {
     tempImagePath: '',

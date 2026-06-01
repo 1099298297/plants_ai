@@ -75,6 +75,12 @@ Page({
     });
   },
 
+  navigateToChat() {
+    wx.navigateTo({
+      url: '/pages/chat/chat'
+    });
+  },
+  //目前不使用语音对话
   navigateToVoiceChat() {
     wx.navigateTo({
       url: '/pages/voiceChat/voiceChat'

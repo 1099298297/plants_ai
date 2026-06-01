@@ -1,0 +1,60 @@
+<!--pages/chat/chat.wxml-->
+<view class="chat-container">
+  <!-- 消息列表：绝对定位，动态 bottom -->
+  <scroll-view 
+    class="msg-list" 
+    style="top: 0; bottom: {{bottomHeight}}px;"
+    scroll-y 
+    scroll-into-view="{{scrollToView}}" 
+    enhanced 
+    show-scrollbar="{{false}}"
+    scroll-with-animation
+  >
+    <!-- 空状态占位 -->
+    <view class="empty-state" wx:if="{{messages.length === 0 && !isLoading}}">
+      <image src="/images/chat/empty-back.png" mode="widthFix" class="empty-image"></image>
+      <text class="empty-title">你的植物小管家已上线</text>
+      <text class="empty-desc">拍照识别 · 病害诊断 · 养护指导\n点击下方相机按钮开始吧</text>
+    </view>
+
+    <block wx:for="{{messages}}" wx:key="id">
+      <view class="msg-item {{item.role}}" id="msg-{{item.id}}">
+        <image wx:if="{{item.imagePath}}" src="{{item.imagePath}}" mode="aspectFill" class="msg-img" bindtap="previewImage" data-url="{{item.imagePath}}"></image>
+        <view class="msg-bubble" wx:if="{{item.content}}">
+          <text class="msg-text" user-select>{{item.content}}</text>
+        </view>
+      </view>
+    </block>
+
+    <view class="msg-item assistant" wx:if="{{isLoading}}">
+      <view class="msg-bubble loading-bubble">
+        <text class="loading-dot">●</text>
+        <text class="loading-dot delay1">●</text>
+        <text class="loading-dot delay2">●</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 输入栏：固定在底部 -->
+  <view class="input-bar" style="bottom: {{keyboardHeight}}px;">
+    <view class="preview-thumb" wx:if="{{tempImagePath}}">
+      <image src="{{tempImagePath}}" mode="aspectFill"></image>
+      <view class="remove-img" bindtap="removeImage">✕</view>
+    </view>
+    <view class="input-row">
+      <button class="img-btn" bindtap="chooseImage">
+        <image src="/images/icons/camera.png" mode="aspectFit" class="camera-icon"></image>
+      </button>
+      <input 
+        class="text-input" 
+        value="{{inputText}}" 
+        bindinput="onInput" 
+        placeholder="输入植物相关问题..." 
+        confirm-type="send" 
+        bindconfirm="sendMessage"
+        adjust-position="{{false}}"
+      />
+      <button class="send-btn" bindtap="sendMessage" disabled="{{!inputText && !tempImagePath}}">发送</button>
+    </view>
+  </view>
+</view>

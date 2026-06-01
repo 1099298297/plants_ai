@@ -16,6 +16,7 @@
     "pages/profile/profile",
     "pages/plantRecognition/plantRecognition",
     "pages/voiceChat/voiceChat",
+    "pages/chat/chat",
     "pages/plantArchive/plantArchive",
     "pages/plantArchive/addPlant",
     "pages/plantArchive/address/address",

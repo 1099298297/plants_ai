@@ -1,3 +1,4 @@
+/* plantRecognition.wxss */
 .container {
   padding: 40rpx 30rpx; /* 稍微增加内边距，让两边留白更舒服 */
   background-color: #f5f5f5;
