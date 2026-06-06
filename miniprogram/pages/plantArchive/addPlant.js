@@ -234,7 +234,7 @@ chooseImage() {
         await db.collection('user_plants').add({
           data: {
             ...plantData,
-            createTime: db.serverDate(),
+            createTime: new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' }),
             healthStatus: '良好'  // 可选字段
           }
         })

@@ -14,7 +14,7 @@
             <text class="phone">{{item.phone}}</text>
             <text class="default-tag" wx:if="{{item.isDefault}}">默认</text>
           </view>
-          <view class="address-detail">{{item.province}}{{item.city}}{{item.district}}{{item.detail}}</view>
+          <view class="address-detail">{{item.fullAddress}}</view>
         </view>
         <view class="address-actions">
           <view class="action-btn edit" catchtap="editAddress" data-id="{{item.id}}">

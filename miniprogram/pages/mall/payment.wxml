@@ -1,3 +1,4 @@
+<!--payment.wxml-->
 <view class="container">
   <view class="pay-box">
     <view class="title">订单支付</view>

@@ -1,3 +1,4 @@
+<!--checkout.wxml-->
 <view class="container">
 
   <view class="card address-card" bindtap="goSelectAddress">

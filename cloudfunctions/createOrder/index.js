@@ -1,3 +1,4 @@
+// createOrder/index.js
 const cloud = require('wx-server-sdk')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
@@ -60,7 +61,7 @@ exports.main = async (event, context) => {
         address: event.address,
         totalPrice,
         status: 'pending',
-        createTime: db.serverDate()
+        createTime: new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })
       }
     })
 

@@ -1,3 +1,4 @@
+//cancelOrder/index.js
 // 取消订单 + 正确恢复库存（适配你的商城）
 const cloud = require('wx-server-sdk')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })

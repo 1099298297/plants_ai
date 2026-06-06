@@ -1,3 +1,4 @@
+// address-edit.js
 Page({
   data: {
     address: {
@@ -8,9 +9,10 @@ Page({
       city: '',
       district: '',
       detail: '',
-      latitude: null,    // 新增经纬度字段（可选）
+      latitude: null,
       longitude: null,
-      isDefault: false
+      isDefault: false,
+      fullAddress: ''   // 快递员直接可见的完整地址
     },
     region: ['', '', '']
   },
@@ -19,9 +21,11 @@ Page({
     if (options.id) {
       const addresses = wx.getStorageSync('addresses') || [];
       const address = addresses.find(addr => addr.id === options.id);
-      
       if (address) {
-        // 兼容旧数据没有经纬度
+        // 兼容旧数据：没有 fullAddress 或经纬度
+        if (!address.fullAddress) {
+          address.fullAddress = this.generateFullAddress(address);
+        }
         this.setData({
           address: {
             ...address,
@@ -33,7 +37,6 @@ Page({
       }
     }
   },
-
 
   // 输入收货人姓名
   inputName(e) {
@@ -74,37 +77,41 @@ Page({
     });
   },
 
+  // 地图选点
   chooseLocation() {
     wx.chooseLocation({
       success: (res) => {
         console.log('地图选点结果', res);
-  
-        // 1. 拼接详细地址（保留原逻辑）
-        let fullDetail = '';
-        if (res.name && res.address) {
-          fullDetail = `${res.name}，${res.address}`;
-        } else if (res.name) {
-          fullDetail = res.name;
-        } else if (res.address) {
+
+        //1. 拼接详细地址：把 name 放在 address 后面
+      let fullDetail = '';
+      if (res.address && res.name) {
+        // 如果 address 已经包含 name，则不再重复添加
+        if (res.address.includes(res.name)) {
           fullDetail = res.address;
+        } else {
+          fullDetail = `${res.address}，${res.name}`;
         }
-  
+      } else if (res.address) {
+        fullDetail = res.address;
+      } else if (res.name) {
+        fullDetail = res.name;
+      }
+
         // 2. 从 res.address 解析省市区
         const { province, city, district } = parseRegionFromAddress(res.address);
-  
+
         // 3. 一次性更新数据
         this.setData({
           'address.detail': fullDetail,
           'address.latitude': res.latitude,
           'address.longitude': res.longitude,
-          // 省市区信息
           region: [province, city, district],
           'address.province': province,
           'address.city': city,
           'address.district': district
         });
-  
-        // 如果解析失败，提示用户可手动选择（但不影响保存，后续验证会拦截）
+
         if (!province && !city) {
           wx.showToast({ title: '地址解析失败，请手动选择地区', icon: 'none', duration: 2000 });
         }
@@ -126,11 +133,28 @@ Page({
     });
   },
 
-  // 保存地址时无需大改，但如果有经纬度一并保存
+  /**
+   * 生成完整地址（快递员直接可见）
+   * 规则：若详细地址已包含省市区，则直接返回详细地址；否则拼接省市区+详细地址
+   */
+  generateFullAddress(addr) {
+    const { province = '', city = '', district = '', detail = '' } = addr;
+    const regionPart = (province + city + district).trim();
+    const detailPart = detail.trim();
+    if (!regionPart) return detailPart;
+    if (!detailPart) return regionPart;
+    // 避免重复：如果详细地址已经以省市区开头，直接返回详细地址
+    if (detailPart.startsWith(regionPart)) {
+      return detailPart;
+    }
+    return regionPart + detailPart;
+  },
+
+  // 保存地址
   saveAddress() {
-    const { address } = this.data;
-    
-    // 表单验证（不变）
+    let { address } = this.data;
+
+    // 表单验证
     if (!address.name) {
       wx.showToast({ title: '请输入收货人姓名', icon: 'none' });
       return;
@@ -152,8 +176,12 @@ Page({
       return;
     }
 
-    const addresses = wx.getStorageSync('addresses') || [];
-    
+    // 生成完整地址
+    address.fullAddress = this.generateFullAddress(address);
+    // console.log(this.data);
+
+    // 保存到本地存储
+    let addresses = wx.getStorageSync('addresses') || [];
     if (address.id) {
       const index = addresses.findIndex(addr => addr.id === address.id);
       if (index > -1) {
@@ -164,6 +192,7 @@ Page({
       addresses.push(address);
     }
 
+    // 处理默认地址
     if (address.isDefault) {
       addresses.forEach(addr => {
         if (addr.id !== address.id) addr.isDefault = false;
@@ -173,11 +202,10 @@ Page({
     }
 
     wx.setStorageSync('addresses', addresses);
-    
+
     wx.showToast({ title: '保存成功', icon: 'success' });
     setTimeout(() => { wx.navigateBack(); }, 1500);
-  },
-  
+  }
 });
 
 /**
@@ -191,11 +219,7 @@ function parseRegionFromAddress(addressStr) {
   const sarList = ['香港特别行政区', '澳门特别行政区'];
   for (let sar of sarList) {
     if (addressStr.startsWith(sar)) {
-      return {
-        province: sar,
-        city: sar,
-        district: ''
-      };
+      return { province: sar, city: sar, district: '' };
     }
   }
 
@@ -203,42 +227,50 @@ function parseRegionFromAddress(addressStr) {
   const municipalityList = ['北京市', '天津市', '上海市', '重庆市'];
   for (let m of municipalityList) {
     if (addressStr.startsWith(m)) {
-      // 格式如：北京市朝阳区xxx → city = 北京市，district = 朝阳区
       const afterCity = addressStr.substring(m.length);
-      const districtMatch = afterCity.match(/^([^/]+?[区县])/); // 捕获第一个区或县
+      const districtMatch = afterCity.match(/^(.+?(?:自治[区县旗]|林区|特区|[市区县旗]))/);
       const district = districtMatch ? districtMatch[1] : '';
-      return {
-        province: m,
-        city: m,
-        district: district
-      };
+      return { province: m, city: m, district };
     }
   }
 
-  // 普通省份/自治区
+  // 自治区（广西、内蒙古、西藏、宁夏、新疆）
+  const autonomousRegex = /^(.+?自治区)/;
+  const autoMatch = addressStr.match(autonomousRegex);
+  if (autoMatch) {
+    const province = autoMatch[1];
+    const afterProv = addressStr.substring(province.length);
+    const cityRegex = /^(.+?[市])/;
+    const cityMatch = afterProv.match(cityRegex);
+    const city = cityMatch ? cityMatch[1] : '';
+    const afterCity = cityMatch ? afterProv.substring(city.length) : afterProv;
+    const districtMatch = afterCity.match(/^(.+?(?:自治[区县旗]|林区|特区|[市区县旗]))/);
+    const district = districtMatch ? districtMatch[1] : '';
+    return { province, city, district };
+  }
+
+  // 普通省份
   const provRegex = /^(.+?[省])/;
   const provMatch = addressStr.match(provRegex);
   if (provMatch) {
     const province = provMatch[1];
     const afterProv = addressStr.substring(province.length);
-    // 提取市
     const cityRegex = /^(.+?[市])/;
     const cityMatch = afterProv.match(cityRegex);
     const city = cityMatch ? cityMatch[1] : '';
     const afterCity = cityMatch ? afterProv.substring(city.length) : afterProv;
-    // 提取区县
-    const districtMatch = afterCity.match(/^(.+?[区县])/);
+    const districtMatch = afterCity.match(/^(.+?(?:自治[区县旗]|林区|特区|[市区县旗]))/);
     const district = districtMatch ? districtMatch[1] : '';
     return { province, city, district };
   }
 
-  // 没有省份，可能为省直辖县级市（如“仙桃市xxx”）
+  // 省直辖县级市（如“仙桃市xxx”）
   const directCityRegex = /^(.+?[市])/;
   const directCityMatch = addressStr.match(directCityRegex);
   if (directCityMatch) {
     const city = directCityMatch[1];
     const afterCity = addressStr.substring(city.length);
-    const districtMatch = afterCity.match(/^(.+?[区县])/);
+    const districtMatch = afterCity.match(/^(.+?(?:自治[区县旗]|林区|特区|[市区县旗]))/);
     const district = districtMatch ? districtMatch[1] : '';
     return { province: '', city, district };
   }

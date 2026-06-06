@@ -1,3 +1,4 @@
+<!--order-detail.wxml-->
 <view class="container">
   <!-- 订单状态 -->
   <view class="order-status">
@@ -11,7 +12,7 @@
     <view class="address-info">
       <text class="name">{{order.address.name}}</text>
       <text class="phone">{{order.address.phone}}</text>
-      <text class="address-detail">{{order.address.province}}{{order.address.city}}{{order.address.district}}{{order.address.detail}}</text>
+      <text class="address-detail">{{order.address.fullAddress}}</text>
     </view>
   </view>
 

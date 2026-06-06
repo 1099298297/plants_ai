@@ -1,3 +1,4 @@
+//payment.js
 Page({
   data: {
     orderId: '',

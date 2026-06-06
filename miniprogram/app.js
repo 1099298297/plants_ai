@@ -31,7 +31,7 @@ App({
             if (userRes.data.length === 0) {
               db.collection('users').add({
                 data: {
-                  createTime: new Date()
+                  createTime: new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' }),
                 }
               })
             }

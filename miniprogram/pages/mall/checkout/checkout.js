@@ -1,3 +1,4 @@
+//checkout.js
 Page({
   data: {
     cartList: [],     // 永远是数组
