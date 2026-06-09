@@ -1,7 +1,7 @@
 # 微信开发者工具自动生成
-project.config.json
-project.private.config.json
-settings.json
+# project.config.json
+# project.private.config.json
+# settings.json
 
 # 编译/缓存
 *.log
