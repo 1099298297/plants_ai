@@ -89,7 +89,7 @@ Page({
             wx.setStorageSync('cart', newCart)
           }
   
-          wx.navigateTo({
+          wx.redirectTo({
             url: '/pages/mall/order-detail?orderId=' + res.result.orderId
           })
         } else {

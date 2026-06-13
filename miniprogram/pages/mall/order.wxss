@@ -114,7 +114,7 @@
 
 /* 左边价格：占 50%，不被挤压 */
 .total-info {
-  width: 50%;
+  width: 70%;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -123,7 +123,7 @@
 
 /* 右边按钮组：占 50%，放两个按钮 */
 .btn-scale {
-  width: 50%;
+  width: 30%;
   flex-shrink: 0;
   display: flex;
   justify-content: flex-end;

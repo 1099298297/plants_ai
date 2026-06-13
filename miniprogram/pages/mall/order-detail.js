@@ -19,8 +19,10 @@ Page({
       const orderData = res.data;
 
       let statusText = "";
-      if (orderData.status === "pending") statusText = "待支付";
+      if (orderData.status === "pending") statusText = "已提交";
       if (orderData.status === "paid") statusText = "已支付";
+      if (orderData.status === "shipped") statusText = "已发货";
+      if (orderData.status === "completed") statusText = "已完成";
       if (orderData.status === "cancelled") statusText = "已取消";
 
       // ✅ 24小时制 时间格式化
@@ -52,5 +54,11 @@ Page({
     wx.redirectTo({
       url: `/pages/mall/payment?orderId=${this.data.orderId}`
     });
+  },
+  goToOrder() {
+    console.log("---");
+    wx.navigateBack({
+      url: '/pages/mall/order'
+    })
   }
 });

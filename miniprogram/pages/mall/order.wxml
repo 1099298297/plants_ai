@@ -31,10 +31,10 @@
       <view class="order-bottom">
         <view class="total-info">
           <text>共{{item.items.length}}件</text>
-          <text class="total-price">实付：¥{{item.fixedPrice}}</text>
+          <text class="total-price">到货支付：¥{{item.fixedPrice}}</text>
         </view>
         <view class="btn-scale">
-          <button wx:if="{{item.status === 'pending'}}" class="pay-btn" catchtap="goToPay" data-id="{{item._id}}">去支付</button>
+          <!-- <button wx:if="{{item.status === 'pending'}}" class="pay-btn" catchtap="goToPay" data-id="{{item._id}}">去支付</button> -->
           <button wx:if="{{item.status === 'pending'}}" class="cancel-btn" catchtap="cancelOrder" data-id="{{item._id}}">取消订单</button>
         </view>
       </view>
