@@ -2,7 +2,7 @@
 Page({
   data: {
     address: {
-      id: '',
+      _id: '',
       name: '',
       phone: '',
       province: '',
@@ -17,14 +17,15 @@ Page({
     region: ['', '', '']
   },
 
-  onLoad(options) {
+  async onLoad(options) {
     if (options.id) {
-      const addresses = wx.getStorageSync('addresses') || [];
-      const address = addresses.find(addr => addr.id === options.id);
-      if (address) {
-        // 兼容旧数据：没有 fullAddress 或经纬度
+      wx.showLoading({ title: '加载中...', mask: true })
+      try {
+        const db = wx.cloud.database()
+        const res = await db.collection('mall_addresses').doc(options.id).get()
+        const address = res.data
         if (!address.fullAddress) {
-          address.fullAddress = this.generateFullAddress(address);
+          address.fullAddress = this.generateFullAddress(address)
         }
         this.setData({
           address: {
@@ -33,7 +34,12 @@ Page({
             longitude: address.longitude || null
           },
           region: [address.province, address.city, address.district]
-        });
+        })
+        wx.hideLoading()
+      } catch (err) {
+        wx.hideLoading()
+        console.error('加载地址失败', err)
+        wx.showToast({ title: '加载失败', icon: 'none' })
       }
     }
   },
@@ -150,8 +156,8 @@ Page({
     return regionPart + detailPart;
   },
 
-  // 保存地址
-  saveAddress() {
+  // 保存地址（上传到云数据库）
+  async saveAddress() {
     let { address } = this.data;
 
     // 表单验证
@@ -178,33 +184,49 @@ Page({
 
     // 生成完整地址
     address.fullAddress = this.generateFullAddress(address);
-    // console.log(this.data);
 
-    // 保存到本地存储
-    let addresses = wx.getStorageSync('addresses') || [];
-    if (address.id) {
-      const index = addresses.findIndex(addr => addr.id === address.id);
-      if (index > -1) {
-        addresses[index] = address;
+    wx.showLoading({ title: '保存中...', mask: true })
+
+    try {
+      const db = wx.cloud.database()
+
+      // 如果设为默认地址，先取消其他地址的默认状态
+      if (address.isDefault) {
+        await db.collection('mall_addresses')
+          .where({ isDefault: true })
+          .update({ data: { isDefault: false } })
+      } else {
+        // 如果是唯一地址，自动设为默认
+        const { total } = await db.collection('mall_addresses')
+          .where({}).count()
+        if (total === 0) {
+          address.isDefault = true
+        }
       }
-    } else {
-      address.id = Date.now().toString();
-      addresses.push(address);
+
+      if (address._id) {
+        // 编辑已有地址
+        const { _id, ...updateData } = address
+        await db.collection('mall_addresses').doc(_id).update({ data: updateData })
+      } else {
+        // 新增地址
+        await db.collection('mall_addresses').add({
+          data: {
+            ...address,
+            createTime: db.serverDate()
+          }
+        })
+      }
+
+      wx.hideLoading()
+      wx.showToast({ title: '保存成功', icon: 'success' })
+      setTimeout(() => { wx.navigateBack() }, 1500)
+
+    } catch (err) {
+      wx.hideLoading()
+      console.error('保存地址失败', err)
+      wx.showToast({ title: '保存失败', icon: 'none' })
     }
-
-    // 处理默认地址
-    if (address.isDefault) {
-      addresses.forEach(addr => {
-        if (addr.id !== address.id) addr.isDefault = false;
-      });
-    } else if (addresses.length === 1) {
-      address.isDefault = true;
-    }
-
-    wx.setStorageSync('addresses', addresses);
-
-    wx.showToast({ title: '保存成功', icon: 'success' });
-    setTimeout(() => { wx.navigateBack(); }, 1500);
   }
 });
 

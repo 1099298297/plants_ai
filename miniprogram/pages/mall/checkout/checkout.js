@@ -30,7 +30,7 @@ Page({
     this.setData({ total: total.toFixed(2) })
   },
 
-  loadAddress() {
+  async loadAddress() {
     const pages = getCurrentPages()
     const current = pages[pages.length - 1]
     if (current.data.selectedAddress) {
@@ -42,11 +42,23 @@ Page({
       return
     }
 
-    const list = wx.getStorageSync('addresses') || []
-    const def = list.find(i => i.isDefault)
-    if (def) {
-      this.setData({ address: def, hasAddress: true })
-    } else {
+    // 从云数据库取默认地址
+    try {
+      const db = wx.cloud.database()
+      const { data: addresses } = await db.collection('mall_addresses')
+        .where({})
+        .orderBy('createTime', 'desc')
+        .get()
+      const def = addresses.find(i => i.isDefault)
+      if (def) {
+        this.setData({ address: def, hasAddress: true })
+      } else if (addresses.length > 0) {
+        this.setData({ address: addresses[0], hasAddress: true })
+      } else {
+        this.setData({ hasAddress: false })
+      }
+    } catch (err) {
+      console.error('加载地址失败', err)
       this.setData({ hasAddress: false })
     }
   },

@@ -7,7 +7,7 @@
   <!-- 地址列表 -->
   <view class="address-list" wx:if="{{addresses.length > 0}}">
     <view class="address-item" wx:for="{{addresses}}" wx:key="id">
-      <view class="address-content" bindtap="selectAddress" data-id="{{item.id}}">
+      <view class="address-content" bindtap="selectAddress" data-id="{{item._id}}">
         <view class="address-info">
           <view class="contact-info">
             <text class="name">{{item.name}}</text>
@@ -17,11 +17,11 @@
           <view class="address-detail">{{item.fullAddress}}</view>
         </view>
         <view class="address-actions">
-          <view class="action-btn edit" catchtap="editAddress" data-id="{{item.id}}">
+          <view class="action-btn edit" catchtap="editAddress" data-id="{{item._id}}">
             <image src="/images/icons/edit.png" mode="aspectFit"></image>
             <text>编辑</text>
           </view>
-          <view class="action-btn delete" catchtap="deleteAddress" data-id="{{item.id}}">
+          <view class="action-btn delete" catchtap="deleteAddress" data-id="{{item._id}}">
             <image src="/images/icons/delete.png" mode="aspectFit"></image>
             <text>删除</text>
           </view>

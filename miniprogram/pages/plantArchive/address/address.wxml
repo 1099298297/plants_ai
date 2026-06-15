@@ -36,11 +36,11 @@
 
     <!-- 右侧按钮 -->
     <view class="item-actions">
-      <view class="edit-btn" bindtap="editAddress" data-index="{{index}}">
+      <view class="edit-btn" bindtap="editAddress" data-id="{{item._id}}">
         编辑
       </view>
 
-      <view class="delete-btn" bindtap="deleteAddress" data-index="{{index}}">
+      <view class="delete-btn" bindtap="deleteAddress" data-id="{{item._id}}">
         删除
       </view>
     </view>

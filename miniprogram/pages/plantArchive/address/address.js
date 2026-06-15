@@ -7,24 +7,27 @@ Page({
 
   onShow() {
     this.loadAddressList()
-    // 监听从 editAddress 返回时是否有更新标志
-    const needRefresh = wx.getStorageSync('_addressListChanged')
-    if (needRefresh) {
-      wx.removeStorageSync('_addressListChanged')
-      this.loadAddressList()
-    }
   },
 
-  // 加载地址列表
-  loadAddressList() {
-    const addressList = wx.getStorageSync('plantAddressList') || []
-    this.setData({ addressList })
+  // 加载地址列表（从云数据库）
+  async loadAddressList() {
+    try {
+      const db = wx.cloud.database()
+      const res = await db.collection('plant_addresses')
+        .where({})
+        .orderBy('createTime', 'desc')
+        .get()
+      this.setData({ addressList: res.data })
+    } catch (err) {
+      console.error('加载地址失败', err)
+      this.setData({ addressList: [] })
+    }
   },
 
   // 选择新地址（调用微信地图）
   chooseLocation() {
     wx.chooseLocation({
-      success: (res) => {
+      success: async (res) => {
         if (!res.address) {
           wx.showToast({ title: '未获取到地址', icon: 'none' })
           return
@@ -33,29 +36,40 @@ Page({
         const newAddress = {
           address: res.address,
           latitude: res.latitude,
-          longitude: res.longitude,
-          id: Date.now().toString() // 唯一标识
+          longitude: res.longitude
         }
 
-        let list = wx.getStorageSync('plantAddressList') || []
+        // 防止重复：从云查重
+        try {
+          const db = wx.cloud.database()
+          const { data: list } = await db.collection('plant_addresses')
+            .where({}).get()
+          const isDuplicate = list.some(item => {
+            const sameAddress = item.address === newAddress.address
+            const sameLat = Math.abs(item.latitude - newAddress.latitude) < 0.0001
+            const sameLng = Math.abs(item.longitude - newAddress.longitude) < 0.0001
+            return sameAddress || (sameLat && sameLng)
+          })
 
-        // 防止重复：比较完整地址字符串和经纬度（取小数点后4位）
-        const isDuplicate = list.some(item => {
-          const sameAddress = item.address === newAddress.address
-          const sameLat = Math.abs(item.latitude - newAddress.latitude) < 0.0001
-          const sameLng = Math.abs(item.longitude - newAddress.longitude) < 0.0001
-          return sameAddress || (sameLat && sameLng)
-        })
+          if (isDuplicate) {
+            wx.showToast({ title: '地址已存在', icon: 'none' })
+            return
+          }
 
-        if (!isDuplicate) {
-          list.unshift(newAddress)
-          wx.setStorageSync('plantAddressList', list)
-          this.setData({ addressList: list })
-          // 回传选中的地址到上一页（addPlant）
+          // 新增到云
+          await db.collection('plant_addresses').add({
+            data: {
+              ...newAddress,
+              createTime: db.serverDate()
+            }
+          })
+
+          this.setData({ addressList: [newAddress, ...this.data.addressList] })
           this.setPreviousPageAddress(newAddress)
           wx.navigateBack()
-        } else {
-          wx.showToast({ title: '地址已存在', icon: 'none' })
+        } catch (err) {
+          console.error('保存地址失败', err)
+          wx.showToast({ title: '保存失败', icon: 'none' })
         }
       },
       fail: (err) => {
@@ -76,40 +90,38 @@ Page({
 
   // 编辑地址（跳转到编辑页）
   editAddress(e) {
-    const index = e.currentTarget.dataset.index
-    const address = this.data.addressList[index]
+    const { id } = e.currentTarget.dataset
+    const address = this.data.addressList.find(a => a._id === id)
     if (!address) return
 
-    // 使用 eventChannel 传递数据（推荐），同时保留 index 作为 url 参数
     wx.navigateTo({
-      url: `/pages/plantArchive/editAddress/editAddress?index=${index}`,
+      url: `/pages/plantArchive/editAddress/editAddress?id=${id}`,
       events: {
-        // 监听编辑页保存事件，用于刷新列表
         addressUpdated: (updatedAddress) => {
-          this.handleAddressUpdate(index, updatedAddress)
+          this.handleAddressUpdate(id, updatedAddress)
         }
       },
       success: (res) => {
-        // 传递地址数据给编辑页
-        res.eventChannel.emit('sendAddressData', { address, index })
+        res.eventChannel.emit('sendAddressData', { address, id })
       }
     })
   },
 
   // 处理地址更新（被编辑页调用）
-  handleAddressUpdate(index, newAddress) {
-    let list = wx.getStorageSync('plantAddressList') || []
-    if (index >= 0 && index < list.length) {
-      list[index] = { ...list[index], ...newAddress }
-      wx.setStorageSync('plantAddressList', list)
-      this.setData({ addressList: list })
-      
+  async handleAddressUpdate(id, newAddress) {
+    try {
+      const db = wx.cloud.database()
+      await db.collection('plant_addresses').doc(id).update({
+        data: { address: newAddress.address }
+      })
+      this.loadAddressList()
+
       // 如果更新后的地址正好是上一页选中的地址，同步更新
       const pages = getCurrentPages()
       if (pages.length >= 2) {
         const prevPage = pages[pages.length - 2]
         const currentSelected = prevPage.data.selectedAddress
-        if (currentSelected && currentSelected.address === list[index].address) {
+        if (currentSelected && currentSelected.address === this.data.addressList.find(a => a._id === id)?.address) {
           prevPage.setData({
             selectedAddress: {
               address: newAddress.address,
@@ -119,32 +131,43 @@ Page({
           })
         }
       }
+    } catch (err) {
+      console.error('更新地址失败', err)
+      wx.showToast({ title: '更新失败', icon: 'none' })
     }
   },
 
   // 删除地址
   deleteAddress(e) {
-    const index = e.currentTarget.dataset.index
+    const { id } = e.currentTarget.dataset
     wx.showModal({
       title: '提示',
       content: '确定删除该地址吗？',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          let list = wx.getStorageSync('plantAddressList') || []
-          const deletedAddress = list[index]
-          list.splice(index, 1)
-          wx.setStorageSync('plantAddressList', list)
-          this.setData({ addressList: list })
-          wx.showToast({ title: '删除成功', icon: 'success' })
+          try {
+            const db = wx.cloud.database()
+            const deletedAddress = this.data.addressList.find(a => a._id === id)
 
-          // 如果删除的地址正好是上一页选中的地址，清空选中
-          const pages = getCurrentPages()
-          if (pages.length >= 2) {
-            const prevPage = pages[pages.length - 2]
-            const currentSelected = prevPage.data.selectedAddress
-            if (currentSelected && currentSelected.address === deletedAddress.address) {
-              prevPage.setData({ selectedAddress: null })
+            await db.collection('plant_addresses').doc(id).remove()
+
+            this.loadAddressList()
+            wx.showToast({ title: '删除成功', icon: 'success' })
+
+            // 如果删除的地址正好是上一页选中的地址，清空选中
+            if (deletedAddress) {
+              const pages = getCurrentPages()
+              if (pages.length >= 2) {
+                const prevPage = pages[pages.length - 2]
+                const currentSelected = prevPage.data.selectedAddress
+                if (currentSelected && currentSelected.address === deletedAddress.address) {
+                  prevPage.setData({ selectedAddress: null })
+                }
+              }
             }
+          } catch (err) {
+            console.error('删除地址失败', err)
+            wx.showToast({ title: '删除失败', icon: 'none' })
           }
         }
       }

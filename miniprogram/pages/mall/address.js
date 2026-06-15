@@ -68,10 +68,19 @@ Page({
 
   },
 
-  // 加载地址列表
-  loadAddresses() {
-    const addresses = wx.getStorageSync('addresses') || [];
-    this.setData({ addresses });
+  // 加载地址列表（从云数据库）
+  async loadAddresses() {
+    try {
+      const db = wx.cloud.database()
+      const res = await db.collection('mall_addresses')
+        .where({})
+        .orderBy('createTime', 'desc')
+        .get()
+      this.setData({ addresses: res.data })
+    } catch (err) {
+      console.error('加载地址失败', err)
+      this.setData({ addresses: [] })
+    }
   },
 
   // 新增地址
@@ -95,24 +104,30 @@ Page({
     wx.showModal({
       title: '删除地址',
       content: '确定要删除这个地址吗？',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          const { addresses } = this.data;
-          const newAddresses = addresses.filter(addr => addr.id !== id);
-          
-          // 如果删除的是默认地址，且还有其他地址，则将第一个地址设为默认
-          const deletedAddress = addresses.find(addr => addr.id === id);
-          if (deletedAddress.isDefault && newAddresses.length > 0) {
-            newAddresses[0].isDefault = true;
+          try {
+            const db = wx.cloud.database()
+            const address = this.data.addresses.find(addr => addr._id === id);
+            
+            await db.collection('mall_addresses').doc(id).remove()
+            
+            // 如果删除的是默认地址，将第一个地址设为默认
+            if (address && address.isDefault) {
+              const { data: remaining } = await db.collection('mall_addresses')
+                .where({}).orderBy('createTime', 'desc').limit(1).get()
+              if (remaining.length > 0) {
+                await db.collection('mall_addresses').doc(remaining[0]._id)
+                  .update({ data: { isDefault: true } })
+              }
+            }
+            
+            this.loadAddresses()
+            wx.showToast({ title: '删除成功', icon: 'success' })
+          } catch (err) {
+            console.error('删除地址失败', err)
+            wx.showToast({ title: '删除失败', icon: 'none' })
           }
-          
-          this.setData({ addresses: newAddresses });
-          wx.setStorageSync('addresses', newAddresses);
-          
-          wx.showToast({
-            title: '删除成功',
-            icon: 'success'
-          });
         }
       }
     });
