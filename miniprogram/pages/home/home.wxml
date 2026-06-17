@@ -85,7 +85,7 @@
 
         <!-- 有记录：横向滚动列表 -->
         <scroll-view class="history-scroll" scroll-x="{{true}}" show-scrollbar="{{false}}" wx:else>
-          <view class="history-item" wx:for="{{historyList}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+          <view class="history-item" wx:for="{{historyList}}" wx:key="_id" bindtap="goToDetail" data-id="{{item._id}}">
             <image class="plant-img" src="{{item.image}}" mode="aspectFill"></image>
             <text class="plant-name-cn">{{item.basicInfo.name}}</text>
             <text class="plant-name-en">{{item.basicInfo.latinName || item.basicInfo.family}}</text>

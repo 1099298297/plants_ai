@@ -284,7 +284,7 @@ Page({
           plantType: finalPlantType
         });
         
-        this.saveHistory(base64Data, cleanResult);
+        await this.saveHistory(base64Data, cleanResult);
         await this.getRecommendedProducts();
 
       } else {
@@ -299,8 +299,8 @@ Page({
     }
   },
 
-  // ================= 核心修改 2：针对新模板的精准正则提取 =================
-  saveHistory: function(base64Data, aiResult) {
+  // ================= 识别历史 → 上传云存储 + 写入云数据库 =================
+  saveHistory: async function(base64Data, aiResult) {
     try {
       let name = '未知', family = '未知', growthStatus = '暂无', careTips = '暂无';
       
@@ -320,25 +320,30 @@ Page({
       const careMatch = aiResult.match(/4\.养护建议[：:]\s*([\s\S]*)$/);
       if (careMatch) careTips = careMatch[1].trim();
 
-      const newRecord = {
-        id: Date.now(),
-        image: `data:image/jpeg;base64,${base64Data}`, 
-        isExpanded: false,
-        basicInfo: { name, family },
-        details: [
-          { title: '生长状态', content: growthStatus },
-          { title: '关键养护建议', content: careTips }
-        ],
-        createTime: new Date().toLocaleString()
-      };
+      // 上传图片到云存储
+      let imageFileID = '';
+      if (this.data.tempImagePath) {
+        const uploadRes = await wx.cloud.uploadFile({
+          cloudPath: 'recognition/' + Date.now() + '.jpg',
+          filePath: this.data.tempImagePath
+        });
+        imageFileID = uploadRes.fileID;
+      }
 
-      let historyList = wx.getStorageSync('recognitionHistory') || [];
-      historyList.unshift(newRecord);
-      if (historyList.length > 10) historyList = historyList.slice(0, 10); 
-      wx.setStorageSync('recognitionHistory', historyList);
+      // 写入云数据库
+      const db = wx.cloud.database();
+      await db.collection('recognition_history').add({
+        data: {
+          imageUrl: imageFileID,
+          basicInfo: { name, family },
+          growthStatus,
+          careTips,
+          createTime: db.serverDate()
+        }
+      });
 
-    } catch (parseError) {
-      console.error('保存历史记录失败:', parseError);
+    } catch (err) {
+      console.error('保存识别历史失败:', err);
     }
   },
 

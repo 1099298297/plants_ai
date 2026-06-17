@@ -27,11 +27,43 @@ Page({
     }
   },
 
-  loadHistory() {
-    const list = wx.getStorageSync('recognitionHistory') || [];
-    this.setData({
-      historyList: list
-    });
+  async loadHistory() {
+    try {
+      const db = wx.cloud.database();
+      const { data: list } = await db.collection('recognition_history')
+        .where({})
+        .orderBy('createTime', 'desc')
+        .limit(10)
+        .get();
+
+      // 批量获取图片临时链接（cloud:// 不能直接显示）
+      const fileIDs = list.map(item => item.imageUrl).filter(Boolean);
+      if (fileIDs.length > 0) {
+        try {
+          const tempRes = await wx.cloud.getTempFileURL({ fileList: fileIDs });
+          const fileMap = {};
+          tempRes.fileList.forEach(f => fileMap[f.fileID] = f.tempFileURL);
+          list.forEach(item => {
+            item.image = fileMap[item.imageUrl] || '/images/home/hover.png';
+          });
+        } catch (e) {
+          list.forEach(item => { item.image = '/images/home/hover.png'; });
+        }
+      }
+
+      // 格式化时间
+      list.forEach(item => {
+        const d = item.createTime ? new Date(item.createTime) : new Date();
+        item.time = (d.getMonth() + 1) + '/' + d.getDate() + ' ' + 
+                    d.getHours().toString().padStart(2, '0') + ':' + 
+                    d.getMinutes().toString().padStart(2, '0');
+      });
+
+      this.setData({ historyList: list });
+    } catch (err) {
+      console.error('加载识别历史失败', err);
+      this.setData({ historyList: [] });
+    }
   },
 
   // 搜索框输入
