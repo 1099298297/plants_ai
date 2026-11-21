@@ -12,6 +12,7 @@
     "pages/mall/checkout/checkout",
     "pages/mall/address-edit",
     "pages/mall/history",
+    "pages/admin/orders",
     "pages/settings/settings",
     "pages/profile/profile",
     "pages/plantRecognition/plantRecognition",

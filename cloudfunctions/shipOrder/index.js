@@ -13,7 +13,7 @@ exports.main = async (event, context) => {
       const order = orderRes.data
 
       if (!order) throw new Error('订单不存在')
-      if (order.status !== 'pending') throw new Error('只能发货已提交订单')
+      if (order.status !== 'paid') throw new Error('只能发货已支付订单')
 
       // 2. 更新为 shipped
       await trans.collection('orders').doc(orderId).update({

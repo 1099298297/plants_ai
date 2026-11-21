@@ -32,7 +32,8 @@ Page({
           ...item,
           shortId: item._id.substring(0, 16) + '...',
           fixedPrice: item.totalPrice.toFixed(2),
-          statusText: this.getStatusText(item.status)
+          statusText: this.getStatusText(item.status),
+          canConfirmReceipt: item.status === 'shipped'
         }
       })
 
@@ -83,6 +84,41 @@ Page({
     } catch (err) {
       wx.hideLoading()
       wx.showToast({ icon: 'none' })
+    }
+  },
+
+  confirmReceipt(e) {
+    const orderId = e.currentTarget.dataset.id
+    wx.showModal({
+      title: '确认完成',
+      content: '请确认已经收到商品。确认后订单将变为已完成。',
+      confirmText: '确认',
+      success: res => {
+        if (res.confirm) this.doConfirmReceipt(orderId)
+      }
+    })
+  },
+
+  async doConfirmReceipt(orderId) {
+    wx.showLoading({ title: '处理中', mask: true })
+    try {
+      const { result } = await wx.cloud.callFunction({
+        name: 'completeOrder',
+        data: { orderId }
+      })
+      wx.hideLoading()
+
+      if (!result.success) {
+        wx.showToast({ title: result.msg || '操作失败', icon: 'none' })
+        return
+      }
+
+      wx.showToast({ title: '已完成', icon: 'success' })
+      this.getMyOrders()
+    } catch (err) {
+      wx.hideLoading()
+      console.error('确认完成失败:', err)
+      wx.showToast({ title: '操作失败', icon: 'none' })
     }
   },
 

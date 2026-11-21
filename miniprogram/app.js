@@ -1,5 +1,6 @@
 // app.js
 const reminderManager = require('./utils/reminder.js')
+const adminOrderNotifier = require('./utils/adminOrderNotifier.js')
 
 App({
   onLaunch: function () {
@@ -37,6 +38,8 @@ App({
             }
           }
         })
+
+        adminOrderNotifier.start()
       }
     })
   },
@@ -46,10 +49,16 @@ App({
     if (reminderManager && reminderManager.checkAllReminders) {
       reminderManager.checkAllReminders()
     }
+    adminOrderNotifier.start()
+  },
+
+  onHide: function() {
+    adminOrderNotifier.stop()
   },
   
   globalData: {
     // 全局数据
     checkoutItem: null,
+    isAdmin: false,
   }
 });

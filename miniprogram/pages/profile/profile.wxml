@@ -64,6 +64,12 @@
       </view>
     </view>
     <view class="menu-group">
+      <view class="menu-item admin-menu-item" wx:if="{{isAdmin}}" bindtap="navigateToAdminOrders">
+        <image class="menu-icon" src="/images/icons/order.png" mode="aspectFit"></image>
+        <text class="menu-text">订单管理</text>
+        <text class="admin-badge" wx:if="{{activeOrderCount > 0}}">{{activeOrderCount}}</text>
+        <text class="menu-arrow">></text>
+      </view>
       <view class="menu-item" bindtap="navigateToSettings">
         <image class="menu-icon" src="/images/icons/settings.png" mode="aspectFit"></image>
         <text class="menu-text">设置</text>

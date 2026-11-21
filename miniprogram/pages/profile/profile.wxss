@@ -104,5 +104,21 @@
 .menu-icon { width: 40rpx; height: 40rpx; margin-right: 20rpx; }
 .menu-text { flex: 1; font-size: 28rpx; color: #333; }
 .menu-arrow { color: #999; font-size: 28rpx; }
+.admin-menu-item { background: #f2fbf5; }
+.admin-menu-item .menu-text { color: #167044; font-weight: 600; }
+.admin-badge {
+  min-width: 34rpx;
+  height: 34rpx;
+  margin-right: 14rpx;
+  padding: 0 9rpx;
+  box-sizing: border-box;
+  border-radius: 17rpx;
+  background: #e5483f;
+  color: #fff;
+  font-size: 21rpx;
+  font-weight: 600;
+  line-height: 34rpx;
+  text-align: center;
+}
 .version-info { text-align: center; padding: 40rpx 0; }
 .version-info text { font-size: 24rpx; color: #999; }

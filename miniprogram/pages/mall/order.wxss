@@ -131,8 +131,8 @@
 }
 
 /* 按钮：各占一半（也就是整体屏幕的 25%） */
-.pay-btn, .cancel-btn {
-  width: 50%;
+.pay-btn, .cancel-btn, .confirm-btn {
+  width: 100%;
   font-size: 22rpx;
   height: 46rpx;
   line-height: 46rpx;
@@ -150,6 +150,11 @@
 
 .cancel-btn {
   background: #999;
+}
+
+.confirm-btn {
+  background: #4CAF50;
+  color: #fff;
 }
 
 .total-info text {

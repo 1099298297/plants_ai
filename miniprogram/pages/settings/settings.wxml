@@ -21,6 +21,13 @@
           <image class="arrow-icon" src="/images/icons/arrow-right.png" mode="aspectFit"></image>
         </view>
       </view>
+      <view class="settings-item" bindtap="copyUserId">
+        <text class="item-label">我的用户 ID</text>
+        <view class="item-right">
+          <text class="item-value user-id-value">{{userId ? '已获取，点击复制' : '登录后获取'}}</text>
+          <image class="arrow-icon" src="/images/icons/arrow-right.png" mode="aspectFit"></image>
+        </view>
+      </view>
     </view>
 
     <!-- 通用设置 -->
@@ -85,4 +92,4 @@
   <view class="logout-btn" bindtap="logout" wx:if="{{isLoggedIn}}">
     退出登录
   </view> -->
-</view> 
+</view>

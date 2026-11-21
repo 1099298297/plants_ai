@@ -1,0 +1,224 @@
+<view class="page">
+  <view class="checking" wx:if="{{checking}}">
+    <view class="loading-ring"></view>
+    <text>正在验证管理员身份</text>
+  </view>
+
+  <view class="denied" wx:elif="{{!isAdmin}}">
+    <view class="denied-mark">!</view>
+    <text class="denied-title">当前账号没有管理权限</text>
+    <text class="denied-tip">请把下面的用户 ID 加入云数据库 admin_users 集合，或将 ID 配置到云函数环境变量 ADMIN_OPENIDS。</text>
+    <view class="openid-box" bindtap="copyOpenid">
+      <text class="openid">{{currentOpenid || '正在获取用户 ID'}}</text>
+      <text class="copy-tip">点击复制</text>
+    </view>
+    <button class="retry-btn" bindtap="retryAccess">重新验证</button>
+  </view>
+
+  <block wx:else>
+    <view class="hero">
+      <view class="hero-top">
+        <view>
+          <text class="eyebrow">藤丰园林</text>
+          <text class="hero-title">订单工作台</text>
+        </view>
+        <view class="active-badge">
+          <text class="active-number">{{activeCount}}</text>
+          <text class="active-label">待办</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="order-search">
+      <view class="order-search-input">
+        <text class="search-prefix">单号</text>
+        <input
+          value="{{searchInput}}"
+          placeholder="输入完整单号或末尾几位"
+          confirm-type="search"
+          bindinput="onSearchInput"
+          bindconfirm="searchOrders"
+        />
+        <text class="search-clear" wx:if="{{searchInput}}" bindtap="clearSearch">×</text>
+      </view>
+      <button class="search-submit" bindtap="searchOrders">查询</button>
+    </view>
+
+    <view class="search-result-hint" wx:if="{{searchKeyword}}">
+      <text>单号包含“{{searchKeyword}}”</text>
+      <text class="search-result-clear" bindtap="clearSearch">清除查询</text>
+    </view>
+
+    <scroll-view class="status-tabs" scroll-x enable-flex>
+      <view
+        wx:for="{{statusTabs}}"
+        wx:key="key"
+        class="status-tab {{activeStatus === item.key ? 'active' : ''}}"
+        data-status="{{item.key}}"
+        bindtap="changeStatus"
+      >{{item.label}}</view>
+    </scroll-view>
+
+    <view class="list-heading">
+      <text class="list-title">{{searchKeyword ? '查询结果 ' + total + ' 笔' : total + ' 笔订单'}}</text>
+      <text class="list-hint" wx:if="{{loading && orders.length > 0}}">更新中...</text>
+    </view>
+
+    <view class="order-list" wx:if="{{orders.length > 0}}">
+      <view
+        class="order-card"
+        wx:for="{{orders}}"
+        wx:key="_id"
+        bindtap="openOrderDetail"
+        data-id="{{item._id}}"
+      >
+        <view class="order-head">
+          <view>
+            <text class="order-no">#{{item.displayNo}}</text>
+            <text class="order-time">{{item.createTimeText}}</text>
+          </view>
+          <text class="order-status {{item.statusClass}}">{{item.statusText}}</text>
+        </view>
+
+        <view class="compact-order-body">
+          <text class="product-summary">{{item.productSummary}}</text>
+          <text class="receiver-summary">{{item.receiverText || '收货人信息缺失'}}</text>
+        </view>
+
+        <view class="order-foot">
+          <view class="amount-copy">
+            <text class="item-count">共 {{item.itemCount}} 件</text>
+            <text class="amount">¥{{item.amountText}}</text>
+          </view>
+          <view class="actions">
+            <button
+              wx:if="{{item.canMarkPaid}}"
+              class="action-btn mark-paid"
+              data-id="{{item._id}}"
+              data-action="markPaid"
+              catchtap="changeOrderStatus"
+            >标记已支付</button>
+            <button
+              wx:if="{{item.canShip}}"
+              class="action-btn primary"
+              data-id="{{item._id}}"
+              data-action="ship"
+              catchtap="changeOrderStatus"
+            >确认发货</button>
+            <button
+              wx:if="{{item.canComplete}}"
+              class="action-btn complete"
+              data-id="{{item._id}}"
+              data-action="complete"
+              catchtap="changeOrderStatus"
+            >完成订单</button>
+          </view>
+        </view>
+      </view>
+
+      <view class="pagination">
+        <view class="pagination-buttons">
+          <button
+            class="page-arrow"
+            disabled="{{page <= 0 || loading}}"
+            bindtap="previousPage"
+          >上一页</button>
+          <view
+            wx:for="{{pageNumbers}}"
+            wx:key="page"
+            class="page-number {{item.active ? 'active' : ''}}"
+            data-page="{{item.page}}"
+            bindtap="goToPage"
+          >{{item.label}}</view>
+          <button
+            class="page-arrow"
+            disabled="{{page >= pageCount - 1 || loading}}"
+            bindtap="nextPage"
+          >下一页</button>
+        </view>
+        <text class="page-summary">第 {{page + 1}} / {{pageCount}} 页，共 {{total}} 条</text>
+      </view>
+    </view>
+
+    <view class="empty" wx:else>
+      <view class="empty-circle">✓</view>
+      <text class="empty-title">当前没有订单</text>
+      <text class="empty-tip">新订单到达时会在小程序内提醒</text>
+    </view>
+
+    <view class="notice-card">
+      <view class="notice-head">
+        <view class="notice-copy">
+          <text class="notice-title">新订单提醒</text>
+        </view>
+        <button
+          class="notice-btn {{notificationStatus === 'accept' ? 'accepted' : ''}}"
+          bindtap="requestOrderNotification"
+        >{{notificationStatus === 'accept' ? '重新授权' : '开启提醒'}}</button>
+      </view>
+      <text class="notice-desc">小程序打开时自动刷新；关闭小程序后的提醒依赖微信订阅消息授权。</text>
+      <text class="notice-status">当前状态：{{notificationStatusText}}</text>
+    </view>
+  </block>
+
+  <view class="detail-mask" wx:if="{{showOrderDetail}}" bindtap="closeOrderDetail">
+    <view class="detail-sheet" catchtap="noop">
+      <view class="detail-header">
+        <view>
+          <text class="detail-title">订单详情</text>
+          <text class="detail-order-no">#{{detailOrder.displayNo}}</text>
+        </view>
+        <text class="detail-close" bindtap="closeOrderDetail">×</text>
+      </view>
+
+      <scroll-view class="detail-scroll" scroll-y>
+        <view class="detail-summary">
+          <view>
+            <text class="detail-label">订单状态</text>
+            <text class="detail-value">{{detailOrder.statusText}}</text>
+          </view>
+          <view class="detail-summary-right">
+            <text class="detail-label">订单金额</text>
+            <text class="detail-amount">¥{{detailOrder.amountText}}</text>
+          </view>
+        </view>
+
+        <view class="detail-section">
+          <text class="detail-section-title">商品明细</text>
+          <view class="detail-goods" wx:for="{{detailItems}}" wx:key="lineKey">
+            <image
+              class="detail-goods-image"
+              src="{{item.displayImage}}"
+              mode="aspectFill"
+              data-url="{{item.displayImage}}"
+              catchtap="previewDetailImage"
+            ></image>
+            <view class="detail-goods-copy">
+              <text class="detail-goods-name">{{item.name}}</text>
+              <text class="detail-goods-spec" wx:if="{{item.spec}}">{{item.spec}}</text>
+              <text class="detail-goods-price">¥{{item.price}} × {{item.quantity}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="detail-section">
+          <text class="detail-section-title">收货信息</text>
+          <text class="detail-line">{{detailOrder.receiverText || '收货人信息缺失'}}</text>
+          <text class="detail-line secondary">{{detailOrder.addressText}}</text>
+        </view>
+
+        <view class="detail-section">
+          <text class="detail-section-title">订单信息</text>
+          <view class="detail-info-row">
+            <text class="detail-label">创建时间</text>
+            <text class="detail-value">{{detailOrder.createTimeText}}</text>
+          </view>
+          <view class="detail-info-row">
+            <text class="detail-label">商品数量</text>
+            <text class="detail-value">{{detailOrder.itemCount}} 件</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</view>

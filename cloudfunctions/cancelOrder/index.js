@@ -1,9 +1,8 @@
 //cancelOrder/index.js
-// 取消订单 + 正确恢复库存（适配你的商城）
+// 取消待处理订单
 const cloud = require('wx-server-sdk')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
-const _ = db.command
 
 exports.main = async (event, context) => {
   const { orderId } = event
@@ -21,19 +20,11 @@ exports.main = async (event, context) => {
 
       // 2. 取消订单
       await trans.collection('orders').doc(orderId).update({
-        data: { status: 'cancelled' }
+        data: {
+          status: 'cancelled',
+          updateTime: db.serverDate()
+        }
       })
-
-      // 3. 🔥 正确恢复库存（按商品 id 字段查询，不是 _id）
-      const items = order.items || []
-      for (const item of items) {
-        // 👇 👇 👇 这里是修复点！！！
-        await trans.collection('products')
-          .where({ id: item.productId }) // 你的商品 id 是业务ID
-          .update({
-            data: { stock: _.inc(item.quantity) }
-          })
-      }
 
       return { success: true }
     })

@@ -1,9 +1,12 @@
 const app = getApp()
+const adminOrderNotifier = require('../../utils/adminOrderNotifier')
 
 Page({
   data: {
     userInfo: {},
-    isLoggedIn: false
+    isLoggedIn: false,
+    isAdmin: false,
+    activeOrderCount: 0
   },
 
   onLoad() {
@@ -12,6 +15,20 @@ Page({
 
   onShow() {
     this.loadUserInfo(); // 保证每次切回页面都刷新数据
+    this.refreshAdminEntry();
+  },
+
+  async refreshAdminEntry() {
+    if (!wx.getStorageSync('user_openid')) {
+      this.setData({ isAdmin: false, activeOrderCount: 0 })
+      return
+    }
+
+    const session = await adminOrderNotifier.refresh({ notify: false })
+    this.setData({
+      isAdmin: !!session.isAdmin,
+      activeOrderCount: Number(session.activeCount || 0)
+    })
   },
 
   loadUserInfo() {
@@ -68,7 +85,9 @@ Page({
         if (res.confirm) {
           wx.removeStorageSync('user_openid');
           wx.removeStorageSync('userInfo');
-          this.setData({ userInfo: {}, isLoggedIn: false });
+          adminOrderNotifier.clearSession();
+          adminOrderNotifier.stop();
+          this.setData({ userInfo: {}, isLoggedIn: false, isAdmin: false });
           wx.switchTab({ url: '/pages/home/home' });
           wx.showToast({ title: '已退出登录', icon: 'none' });
         }
@@ -115,5 +134,9 @@ Page({
   // 设置
   navigateToSettings() {
     wx.navigateTo({ url: '/pages/settings/settings' })
+  },
+
+  navigateToAdminOrders() {
+    wx.navigateTo({ url: '/pages/admin/orders' })
   },
 });

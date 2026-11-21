@@ -55,6 +55,40 @@ Page({
       url: `/pages/mall/payment?orderId=${this.data.orderId}`
     });
   },
+
+  confirmReceipt() {
+    wx.showModal({
+      title: '确认完成',
+      content: '请确认已经收到商品。确认后订单将变为已完成。',
+      confirmText: '确认',
+      success: res => {
+        if (res.confirm) this.doConfirmReceipt()
+      }
+    })
+  },
+
+  async doConfirmReceipt() {
+    wx.showLoading({ title: '处理中', mask: true })
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'completeOrder',
+        data: { orderId: this.data.orderId }
+      })
+      wx.hideLoading()
+      const result = res.result || {}
+      if (!result.success) {
+        wx.showToast({ title: result.msg || '操作失败', icon: 'none' })
+        return
+      }
+      wx.showToast({ title: '已完成', icon: 'success' })
+      await this.getOrderDetail()
+    } catch (err) {
+      wx.hideLoading()
+      console.error('确认完成失败:', err)
+      wx.showToast({ title: '操作失败', icon: 'none' })
+    }
+  },
+
   goToOrder() {
     console.log("---");
     wx.navigateBack({

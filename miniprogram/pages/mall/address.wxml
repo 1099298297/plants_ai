@@ -6,7 +6,7 @@
 
   <!-- 地址列表 -->
   <view class="address-list" wx:if="{{addresses.length > 0}}">
-    <view class="address-item" wx:for="{{addresses}}" wx:key="id">
+    <view class="address-item" wx:for="{{addresses}}" wx:key="_id">
       <view class="address-content" bindtap="selectAddress" data-id="{{item._id}}">
         <view class="address-info">
           <view class="contact-info">

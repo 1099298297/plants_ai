@@ -1,3 +1,5 @@
+const adminOrderNotifier = require('../../utils/adminOrderNotifier')
+
 Page({
   data: {
     defaultAvatar: '/images/icons/default-avatar.png',
@@ -84,6 +86,7 @@ Page({
       if (openid) {
         wx.setStorageSync('user_openid', openid);
         wx.setStorageSync('userInfo', { nickName: nickName.trim(), avatarUrl: finalAvatarUrl });
+        adminOrderNotifier.refresh({ force: true, notify: false });
         wx.hideLoading();
         wx.showToast({ title: '登录成功', icon: 'success' });
         setTimeout(() => this.goBack(), 1000);

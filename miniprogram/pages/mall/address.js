@@ -138,7 +138,7 @@ Page({
     if (!this.data.isSelectMode) return;
     
     const { id } = e.currentTarget.dataset;
-    const address = this.data.addresses.find(addr => addr.id === id);
+    const address = this.data.addresses.find(addr => addr._id === id);
     
     if (address) {
       // 将选中的地址返回给上一页

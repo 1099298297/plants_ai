@@ -36,6 +36,7 @@
         <view class="btn-scale">
           <!-- <button wx:if="{{item.status === 'pending'}}" class="pay-btn" catchtap="goToPay" data-id="{{item._id}}">去支付</button> -->
           <button wx:if="{{item.status === 'pending'}}" class="cancel-btn" catchtap="cancelOrder" data-id="{{item._id}}">取消订单</button>
+          <button wx:if="{{item.canConfirmReceipt}}" class="confirm-btn" catchtap="confirmReceipt" data-id="{{item._id}}">确认完成</button>
         </view>
       </view>
     </view>

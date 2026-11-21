@@ -4,6 +4,7 @@ Page({
   data: {
     userInfo: {},
     isLoggedIn: false,
+    userId: '',
     settings: {
       notifications: true,
       autoPlay: true,
@@ -27,8 +28,17 @@ Page({
   // 加载用户信息
   loadUserInfo() {
     const userInfo = wx.getStorageSync('userInfo')
-    const isLoggedIn = !!userInfo
-    this.setData({ userInfo, isLoggedIn })
+    const userId = wx.getStorageSync('user_openid') || ''
+    const isLoggedIn = !!userInfo && !!userId
+    this.setData({ userInfo, isLoggedIn, userId })
+  },
+
+  copyUserId() {
+    if (!this.data.userId) {
+      wx.showToast({ title: '请先登录', icon: 'none' })
+      return
+    }
+    wx.setClipboardData({ data: this.data.userId })
   },
 
   // 加载设置
@@ -209,4 +219,4 @@ Page({
       }
     })
   }
-}) 
+})

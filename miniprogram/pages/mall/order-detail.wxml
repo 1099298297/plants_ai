@@ -3,7 +3,7 @@
   <!-- 订单状态 -->
   <view class="order-status">
     <text class="status-text {{order.status}}">{{order.statusText}}</text>
-    <text class="tip" wx:if="{{order.status === 'pending'}}">您已提交订单，请等待发货</text>
+    <text class="tip" wx:if="{{order.status === 'pending'}}">您已提交订单，请等待管理员确认</text>
   </view>
 
   <!-- 收货地址（新增，样式完全统一） -->
@@ -48,8 +48,7 @@
     <text class="price">¥{{order.totalPrice}}</text>
   </view>
 
-  <!-- 支付按钮（仅待支付显示） -->
-  <!-- <view class="pay-bottom" wx:if="{{order.status === 'pending'}}">
-    <button class="pay-btn" bindtap="goToPay">完成提交</button>
-  </view> -->
+  <view class="pay-bottom" wx:if="{{order.status === 'shipped'}}">
+    <button class="pay-btn" bindtap="confirmReceipt">确认完成</button>
+  </view>
 </view>

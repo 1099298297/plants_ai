@@ -5,6 +5,7 @@ const db = cloud.database()
 
 exports.main = async (event, context) => {
   const { orderId } = event
+  const { OPENID } = cloud.getWXContext()
 
   try {
     await db.runTransaction(async trans => {
@@ -12,17 +13,20 @@ exports.main = async (event, context) => {
       const order = orderRes.data
 
       if (!order) throw new Error('订单不存在')
+      if (order.openid !== OPENID) throw new Error('只能完成自己的订单')
       if (order.status !== 'shipped') throw new Error('只能完成已发货订单')
 
       await trans.collection('orders').doc(orderId).update({
         data: {
           status: 'completed',
-          completedAt: db.serverDate()
+          completedAt: db.serverDate(),
+          completedBy: 'user',
+          updateTime: db.serverDate()
         }
       })
     })
 
-    return { success: true }
+    return { success: true, msg: '订单已完成' }
 
   } catch (e) {
     console.error('完成订单失败：', e)
