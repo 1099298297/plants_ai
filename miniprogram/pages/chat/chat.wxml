@@ -1,9 +1,14 @@
 <!--pages/chat/chat.wxml-->
 <view class="chat-container">
+  <view class="ai-notice">
+    <text class="ai-notice-badge">AI生成</text>
+    <text class="ai-notice-text">本页回答由人工智能生成，仅供参考</text>
+  </view>
+
   <!-- 消息列表：绝对定位，动态 bottom -->
   <scroll-view 
     class="msg-list" 
-    style="top: 0; bottom: {{bottomHeight}}px;"
+    style="top: 104rpx; bottom: {{bottomHeight}}px;"
     scroll-y 
     scroll-into-view="{{scrollToView}}" 
     enhanced 
@@ -21,6 +26,7 @@
       <view class="msg-item {{item.role}}" id="msg-{{item.id}}">
         <image wx:if="{{item.imagePath}}" src="{{item.imagePath}}" mode="aspectFill" class="msg-img" bindtap="previewImage" data-url="{{item.imagePath}}"></image>
         <view class="msg-bubble" wx:if="{{item.content}}">
+          <view class="ai-answer-label" wx:if="{{item.role === 'assistant'}}">人工智能生成</view>
           <text class="msg-text" user-select>{{item.content}}</text>
         </view>
       </view>

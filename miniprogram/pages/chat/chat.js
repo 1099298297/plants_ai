@@ -1,8 +1,6 @@
 // pages/chat/chat.js
 // 注意：生产环境请将 API_KEY 放在后端
-const API_KEY = 'sk-7f4f77cdbbc844f0b288159c465ebef6';
-const MODEL_NAME = 'qwen-vl-max';
-const API_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions';
+const { dashscope } = require('../../config/ai');
 
 Page({
   data: {
@@ -252,14 +250,14 @@ Page({
   callQwenVL(messages) {
     return new Promise((resolve, reject) => {
       wx.request({
-        url: API_URL,
+        url: dashscope.chatCompletionsUrl,
         method: 'POST',
         header: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${API_KEY}`
+          'Authorization': `Bearer ${dashscope.apiKey}`
         },
         data: {
-          model: MODEL_NAME,
+          model: dashscope.model,
           messages: messages,
           max_tokens: 200,
           temperature: 0.3

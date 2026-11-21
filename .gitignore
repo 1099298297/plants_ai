@@ -36,6 +36,10 @@ pnpm-lock.yaml
 .env.local
 .env.*.local
 
+# 本地 AI 密钥配置
+miniprogram/config/ai.js
+!miniprogram/config/ai.example.js
+
 # 编辑器配置
 .idea/
 .vscode/

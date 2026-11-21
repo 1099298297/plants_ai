@@ -4,6 +4,11 @@
     <text class="title">植物识别</text>
   </view>
 
+  <view class="ai-notice">
+    <text class="ai-notice-badge">AI生成</text>
+    <text>识别与养护内容由人工智能生成，仅供参考</text>
+  </view>
+
   <!-- 图片预览区域 -->
   <view class="image-container">
     <image wx:if="{{tempImagePath}}" src="{{tempImagePath}}" mode="aspectFit" class="preview-image"></image>
@@ -26,6 +31,7 @@
   <view class="result-container" wx:if="{{recognitionResult}}">
     <view class="result-header">
       <text class="result-title">识别结果</text>
+      <text class="ai-answer-label">人工智能生成</text>
     </view>
     <view class="result-content">
       <text class="result-text">{{recognitionResult}}</text>

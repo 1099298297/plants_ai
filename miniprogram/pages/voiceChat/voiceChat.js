@@ -1,3 +1,5 @@
+const { dashscope } = require('../../config/ai');
+
 Page({
   data: {
     chatList: [],
@@ -172,14 +174,14 @@ Page({
   // 替换原来的 askDoubao 函数为 askQwen
   askQwen: function(question) {
     wx.request({
-      url: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', // 阿里云百炼API兼容地址
+      url: dashscope.chatCompletionsUrl,
       method: 'POST',
       header: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer sk-7f4f77cdbbc844f0b288159c465ebef6' // 你的千问 API Key
+        'Authorization': `Bearer ${dashscope.apiKey}`
       },
       data: {
-        model: 'qwen-turbo', // 使用千问模型
+        model: dashscope.model,
         messages: [
           {
             role: 'system',

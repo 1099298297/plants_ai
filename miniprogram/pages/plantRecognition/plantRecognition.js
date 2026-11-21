@@ -1,4 +1,6 @@
 // plantRecognition.js
+const { dashscope } = require('../../config/ai');
+
 Page({
   data: {
     tempImagePath: '',
@@ -169,8 +171,7 @@ Page({
       const base64Data = await this.convertImageToBase64(this.data.tempImagePath);
       const response = await new Promise((resolve, reject) => {
         const requestData = {
-          // ⚠️ 核心修改 1：必须换成通义千问的视觉模型（VL）才能识别图片
-          "model": "qwen-vl-max", // 快速便宜不准确的模型 qwen-v1-plus也可以用 "qwen-vl-max"（更聪明但稍贵/慢一点）
+          model: dashscope.model,
           messages: [
             {
               role: 'user',
@@ -194,13 +195,11 @@ Page({
         };
 
         wx.request({
-          // ⚠️ 核心修改 2：换成阿里云百炼（DashScope）的 OpenAI 兼容接口地址
-          url: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
+          url: dashscope.chatCompletionsUrl,
           method: 'POST',
           header: {
             'Content-Type': 'application/json',
-            // ⚠️ 核心修改 3：使用你阿里云的 API Key（sk-开头这个是对的）
-            'Authorization': 'Bearer sk-7f4f77cdbbc844f0b288159c465ebef6' 
+            'Authorization': `Bearer ${dashscope.apiKey}`
           },
           data: requestData,
           success: (res) => {
@@ -247,8 +246,7 @@ Page({
 //           method: 'POST',
 //           header: {
 //             'Content-Type': 'application/json',
-//             // 'Authorization': 'Bearer 7a4696a4-f98d-4f14-b999-17aa454abca5' // 你的API Key
-//             'Authorization': 'Bearer sk-7f4f77cdbbc844f0b288159c465ebef6' // 你的API Key
+//             'Authorization': 'Bearer YOUR_API_KEY' // 你的API Key
 //           },
 //           data: requestData,
 //           success: (res) => {
