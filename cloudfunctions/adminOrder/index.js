@@ -45,19 +45,24 @@ function normalizeStatus(status) {
 }
 
 async function getSession() {
-  const activeQuery = db.collection('orders').where({
-    status: _.in(ACTIVE_STATUSES)
-  })
+  const pendingQuery = db.collection('orders').where({ status: 'pending' })
+  const paidQuery = db.collection('orders').where({ status: 'paid' })
+  const activeQuery = db.collection('orders').where({ status: _.in(ACTIVE_STATUSES) })
 
-  const [countRes, latestRes] = await Promise.all([
-    activeQuery.count(),
+  const [pendingCountRes, paidCountRes, latestRes] = await Promise.all([
+    pendingQuery.count(),
+    paidQuery.count(),
     activeQuery.orderBy('createTime', 'desc').limit(1).get()
   ])
+  const pendingCount = pendingCountRes.total || 0
+  const paidCount = paidCountRes.total || 0
 
   return {
     success: true,
     isAdmin: true,
-    activeCount: countRes.total || 0,
+    activeCount: pendingCount + paidCount,
+    pendingCount,
+    paidCount,
     latestActive: latestRes.data[0] || null,
     templateId: process.env.ORDER_ADMIN_TEMPLATE_ID || ''
   }

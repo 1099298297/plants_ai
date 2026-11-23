@@ -34,7 +34,7 @@ function formatAmount(amount) {
 
 function alertNewOrder(session) {
   const order = session.latestActive || {}
-  const content = `新订单金额 ¥${formatAmount(order.totalPrice)}，当前共有 ${session.activeCount || 1} 笔待处理订单。`
+  const content = `新订单金额 ¥${formatAmount(order.totalPrice)}，当前共有 ${session.activeCount || 1} 笔待办订单。`
 
   if (wx.vibrateLong) {
     wx.vibrateLong({ fail: () => {} })

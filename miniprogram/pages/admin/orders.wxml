@@ -22,9 +22,19 @@
           <text class="eyebrow">藤丰园林</text>
           <text class="hero-title">订单工作台</text>
         </view>
-        <view class="active-badge">
-          <text class="active-number">{{activeCount}}</text>
-          <text class="active-label">待办</text>
+        <view class="active-badge todo-badge">
+          <text class="todo-heading">待办</text>
+          <view class="todo-counts">
+            <view class="todo-count">
+              <text class="todo-number">{{pendingCount}}</text>
+              <text class="todo-label">未支付</text>
+            </view>
+            <view class="todo-divider"></view>
+            <view class="todo-count">
+              <text class="todo-number">{{paidCount}}</text>
+              <text class="todo-label">未发货</text>
+            </view>
+          </view>
         </view>
       </view>
     </view>
@@ -66,7 +76,7 @@
 
     <view class="order-list" wx:if="{{orders.length > 0}}">
       <view
-        class="order-card"
+        class="order-card status-{{item.statusClass}}"
         wx:for="{{orders}}"
         wx:key="_id"
         bindtap="openOrderDetail"
@@ -81,8 +91,14 @@
         </view>
 
         <view class="compact-order-body">
-          <text class="product-summary">{{item.productSummary}}</text>
-          <text class="receiver-summary">{{item.receiverText || '收货人信息缺失'}}</text>
+          <view class="compact-row">
+            <text class="compact-label">商品</text>
+            <text class="product-summary">{{item.productSummary}}</text>
+          </view>
+          <view class="compact-row">
+            <text class="compact-label">收货</text>
+            <text class="receiver-summary">{{item.receiverText || '收货人信息缺失'}}</text>
+          </view>
         </view>
 
         <view class="order-foot">

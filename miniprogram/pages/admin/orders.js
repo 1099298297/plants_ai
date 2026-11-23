@@ -2,7 +2,7 @@ const notifier = require('../../utils/adminOrderNotifier')
 
 const STATUS_META = {
   pending: { text: '未支付', className: 'pending' },
-  paid: { text: '已支付', className: 'paid' },
+  paid: { text: '未发货(已支付)', className: 'paid' },
   shipped: { text: '已发货', className: 'shipped' },
   completed: { text: '已完成', className: 'completed' },
   cancelled: { text: '已取消', className: 'cancelled' }
@@ -60,12 +60,14 @@ Page({
     notificationStatus: 'unknown',
     notificationStatusText: '未授权',
     activeCount: 0,
+    pendingCount: 0,
+    paidCount: 0,
     searchInput: '',
     searchKeyword: '',
     statusTabs: [
       { key: '', label: '全部' },
       { key: 'pending', label: '未支付' },
-      { key: 'paid', label: '已支付' },
+      { key: 'paid', label: '未发货(已支付)' },
       { key: 'shipped', label: '已发货' },
       { key: 'completed', label: '已完成' },
       { key: 'cancelled', label: '已取消' }
@@ -73,7 +75,7 @@ Page({
     activeStatus: '',
     orders: [],
     page: 0,
-    pageSize: 1,
+    pageSize: 5,
     pageCount: 0,
     pageNumbers: [],
     total: 0,
@@ -140,11 +142,14 @@ Page({
       notifier.markLatestSeen(this.lastLatestId)
     }
 
+    const todoCounts = await this.resolveTodoCounts(session)
     this.setData({
       checking: false,
       isAdmin: true,
       templateId: session.templateId || '',
-      activeCount: session.activeCount || 0
+      activeCount: todoCounts.activeCount,
+      pendingCount: todoCounts.pendingCount,
+      paidCount: todoCounts.paidCount
     })
 
     this.loadNotificationStatus(session.templateId)
@@ -154,19 +159,61 @@ Page({
     await this.loadOrders(true, true, status, pageOverride)
   },
 
-  handleSessionChange(session) {
+  async handleSessionChange(session) {
     if (!session || !session.isAdmin) return
     const latestId = session.latestActive ? session.latestActive._id : ''
     const changed = latestId !== this.lastLatestId
     this.lastLatestId = latestId
 
+    const todoCounts = await this.resolveTodoCounts(session)
     this.setData({
-      activeCount: session.activeCount || 0,
+      activeCount: todoCounts.activeCount,
+      pendingCount: todoCounts.pendingCount,
+      paidCount: todoCounts.paidCount,
       templateId: session.templateId || this.data.templateId
     })
 
     if (changed && this.pageVisible && !this.data.loading) {
       this.loadOrders(true, true, this.data.activeStatus, this.data.page)
+    }
+  },
+
+  async resolveTodoCounts(session) {
+    const pendingCount = Number(session.pendingCount)
+    const paidCount = Number(session.paidCount)
+    if (Number.isInteger(pendingCount) && Number.isInteger(paidCount)) {
+      return {
+        pendingCount,
+        paidCount,
+        activeCount: pendingCount + paidCount
+      }
+    }
+
+    try {
+      const [pendingRes, paidRes] = await Promise.all([
+        wx.cloud.callFunction({
+          name: 'adminOrder',
+          data: { action: 'list', page: 0, pageSize: 1, status: 'pending' }
+        }),
+        wx.cloud.callFunction({
+          name: 'adminOrder',
+          data: { action: 'list', page: 0, pageSize: 1, status: 'paid' }
+        })
+      ])
+      const pending = Number((pendingRes.result || {}).total) || 0
+      const paid = Number((paidRes.result || {}).total) || 0
+      return {
+        pendingCount: pending,
+        paidCount: paid,
+        activeCount: pending + paid
+      }
+    } catch (err) {
+      console.error('统计待办订单失败:', err)
+      return {
+        pendingCount: this.data.pendingCount,
+        paidCount: this.data.paidCount,
+        activeCount: this.data.activeCount
+      }
     }
   },
 
