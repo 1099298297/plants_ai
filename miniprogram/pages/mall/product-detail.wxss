@@ -1,5 +1,5 @@
 .container {
-  padding-bottom: 100rpx;
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
 }
 
 .product-swiper {
@@ -88,6 +88,10 @@
   margin-right: 40rpx;
 }
 
+.action-item.disabled {
+  opacity: 0.4;
+}
+
 .action-item image {
   width: 40rpx;
   height: 40rpx;
@@ -112,6 +116,10 @@
   border-radius: 40rpx;
   margin-left: 20rpx;
   font-size: 32rpx;
+}
+
+.buy-now.disabled {
+  background: #c8c8c8;
 }
 
 .douyin-btn {

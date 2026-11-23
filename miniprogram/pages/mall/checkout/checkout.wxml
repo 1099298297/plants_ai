@@ -46,7 +46,11 @@
 
 <!-- 底部 -->
 <view class="pay-bottom">
-  <button class="pay-btn" bindtap="submitOrder" disabled="{{!hasAddress}}">提交订单</button>
+  <button
+    class="pay-btn {{!hasAddress || isSubmitting ? 'disabled' : ''}}"
+    bindtap="submitOrder"
+    disabled="{{!hasAddress || isSubmitting}}"
+  >{{isSubmitting ? '提交中...' : '提交订单'}}</button>
 </view>
 
 </view>

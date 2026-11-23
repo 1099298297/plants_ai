@@ -1,4 +1,23 @@
 const app = getApp()
+const PRODUCT_CATEGORY_NAMES = {
+  plants: '植物',
+  plant: '植物',
+  tools: '工具',
+  tool: '工具',
+  pots: '花盆',
+  pot: '花盆',
+  fertilizers: '肥料',
+  fertilizer: '肥料',
+};
+
+function getCategoryName(category) {
+  if (category === undefined || category === null || String(category).trim() === '') {
+    return '未分类';
+  }
+
+  const key = String(category).trim();
+  return PRODUCT_CATEGORY_NAMES[key.toLowerCase()] || key;
+}
 
 Page({
   data: {
@@ -8,6 +27,7 @@ Page({
     selectedSpecs: {},
     specKeys: [],
     actionType: "",
+    isLoading: false,
     qty: 1,          // 新增
     maxStock: 999    // 新增
   },
@@ -31,17 +51,19 @@ Page({
 
   // 从后端云接口获取商品详情（实时库存）
   loadProductDetail(productId) {
-    console.log(productId)
+    this.setData({ isLoading: true })
     wx.cloud.callFunction({
       name: 'getProductDetail',
       data: { id: productId }
     }).then(res => {
-      if (!res.result.success) {
-        wx.showToast({ title: res.result.msg, icon: 'none' })
+      const result = res.result || {}
+      if (!result.success) {
+        this.setData({ isLoading: false })
+        wx.showToast({ title: result.msg || '商品加载失败', icon: 'none' })
         return
       }
 
-      const product = res.result.data
+      const product = result.data
 
       // 格式化页面数据
       const formatProduct = {
@@ -50,8 +72,7 @@ Page({
         stock: product.stock || 0,
         details: [
           { label: '商品编号', value: 'SP' + product.id },
-          { label: '商品分类', value: product.category === 'plants' ? '植物' : '工具' },
-          { label: '商品描述', value: product.description || '' }
+          { label: '商品分类', value: getCategoryName(product.category) }
         ],
         specs: product.specs || {}
       }
@@ -59,10 +80,13 @@ Page({
       this.setData({
         product: formatProduct,
         specKeys: Object.keys(formatProduct.specs),
-        selectedSpecs: {}
+        selectedSpecs: {},
+        isLoading: false
       })
     }).catch(err => {
       console.error('请求失败', err)
+      this.setData({ isLoading: false })
+      wx.showToast({ title: '商品加载失败，请重试', icon: 'none' })
     })
   },
 
@@ -70,11 +94,13 @@ Page({
 
   showSpecModal() {
     const product = this.data.product;
+    if (this.data.isLoading || !product) return;
     this.setData({ showModal: true, actionType: "cart", selectedSpecs: {} ,qty: 1, maxStock: product.stock || 999});
   },
 
   showBuyModal() {
     const product = this.data.product;
+    if (this.data.isLoading || !product) return;
     this.setData({ showModal: true, actionType: "buy", selectedSpecs: {} ,qty: 1, maxStock: product.stock || 999});
   },
 
@@ -95,6 +121,7 @@ Page({
 
   confirmSpec() {
     const { selectedSpecs, specKeys } = this.data;
+    if (this.data.isLoading || !this.data.product) return;
 
     for (let k of specKeys) {
       if (!selectedSpecs[k]) {
@@ -186,6 +213,7 @@ Page({
   },
 
   toggleFavorite() {
+    if (this.data.isLoading || !this.data.product) return;
     const productId = String(this.data.product.id);
     let favorites = wx.getStorageSync('favorites') || [];
     if (this.data.isFavorite) {

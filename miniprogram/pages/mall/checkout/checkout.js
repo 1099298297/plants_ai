@@ -1,11 +1,17 @@
 //checkout.js
+function createClientRequestId() {
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+}
+
 Page({
   data: {
     cartList: [],     // 永远是数组
     address: null,
     hasAddress: false,
     total: 0,
-    fromType: ''      // product / cart
+    fromType: '',     // product / cart
+    isSubmitting: false,
+    clientRequestId: createClientRequestId()
   },
 
   onLoad(options) {
@@ -70,9 +76,24 @@ Page({
   },
 
   submitOrder() {
-    const { hasAddress, cartList, fromType, address } = this.data
+    const {
+      hasAddress,
+      cartList,
+      fromType,
+      address,
+      isSubmitting,
+      clientRequestId
+    } = this.data
+
+    if (isSubmitting) return
+
     if (!hasAddress) {
       wx.showToast({ title: '请选择收货地址', icon: 'none' })
+      return
+    }
+
+    if (!Array.isArray(cartList) || cartList.length === 0) {
+      wx.showToast({ title: '订单商品不能为空', icon: 'none' })
       return
     }
   
@@ -81,17 +102,20 @@ Page({
       quantity: i.quantity,
       spec: i.spec || '默认规格'
     }))
-    console.log(address)
-    wx.showLoading({ title: '提交中...' })
+
+    this.setData({ isSubmitting: true })
+    wx.showLoading({ title: '提交中...', mask: true })
     wx.cloud.callFunction({
       name: 'createOrder',
       data: {
         buyItems,
-        address: address  // ✅ 关键：把选中的地址传给后端
+        address: address,  // ✅ 关键：把选中的地址传给后端
+        clientRequestId
       },
       success: res => {
         wx.hideLoading()
-        if (res.result.success) {
+        const result = res.result || {}
+        if (result.success) {
           wx.removeStorageSync('tempCheckoutCart')
   
           if (fromType === 'cart') {
@@ -102,14 +126,16 @@ Page({
           }
   
           wx.redirectTo({
-            url: '/pages/mall/order-detail?orderId=' + res.result.orderId
+            url: '/pages/mall/order-detail?orderId=' + result.orderId
           })
         } else {
-          wx.showToast({ title: res.result.msg, icon: 'none' })
+          this.setData({ isSubmitting: false })
+          wx.showToast({ title: result.msg || '提交失败', icon: 'none' })
         }
       },
       fail: () => {
         wx.hideLoading()
+        this.setData({ isSubmitting: false })
         wx.showToast({ title: '提交失败', icon: 'none' })
       }
     })

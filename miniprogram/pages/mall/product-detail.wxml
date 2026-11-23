@@ -20,15 +20,19 @@
   </view>
 
   <view class="action-bar">
-    <view class="action-item" bindtap="toggleFavorite">
+    <view class="action-item {{!product || isLoading ? 'disabled' : ''}}" bindtap="toggleFavorite">
       <image src="{{isFavorite ? '/images/icons/heart-filled.png' : '/images/icons/heart.png'}}" mode="aspectFit"></image>
       <text>收藏</text>
     </view>
-    <view class="action-item" bindtap="showSpecModal">
+    <view class="action-item {{!product || isLoading ? 'disabled' : ''}}" bindtap="showSpecModal">
       <image src="/images/icons/cart.png" mode="aspectFit"></image>
       <text>加入购物车</text>
     </view>
-    <button class="buy-now" bindtap="showBuyModal">立即购买</button>
+    <button
+      class="buy-now {{!product || isLoading ? 'disabled' : ''}}"
+      bindtap="showBuyModal"
+      disabled="{{!product || isLoading}}"
+    >{{isLoading ? '加载中...' : '立即购买'}}</button>
   </view>
 </view>
 

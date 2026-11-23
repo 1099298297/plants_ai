@@ -188,6 +188,10 @@
   justify-content: center;
 }
 
+.pay-btn.disabled {
+  opacity: 0.55;
+}
+
 /* 规格样式 */
 .spec {
   font-size: 24rpx;

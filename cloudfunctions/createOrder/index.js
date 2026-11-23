@@ -102,6 +102,22 @@ exports.main = async (event, context) => {
       return { success: false, msg: '订单商品不能为空' }
     }
 
+    const clientRequestId = String(event.clientRequestId || '').trim().slice(0, 64)
+    if (clientRequestId) {
+      const { data: existingOrders } = await db.collection('orders')
+        .where({ openid: OPENID, clientRequestId })
+        .limit(1)
+        .get()
+
+      if (existingOrders.length > 0) {
+        return {
+          success: true,
+          orderId: existingOrders[0]._id,
+          duplicate: true
+        }
+      }
+    }
+
     // 1. 查出所有涉及的商品信息
     const productIds = buyItems.map(i => i.productId)
     const { data: products } = await db.collection('products')
@@ -138,6 +154,7 @@ exports.main = async (event, context) => {
         address: event.address,
         totalPrice,
         status: 'pending',
+        clientRequestId: clientRequestId || null,
         createTime,
         createdAt: db.serverDate()
       }

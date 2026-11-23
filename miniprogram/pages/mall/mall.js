@@ -1,4 +1,24 @@
 // mall.js
+const PRODUCT_CATEGORY_NAMES = {
+  plants: '植物',
+  plant: '植物',
+  tools: '工具',
+  tool: '工具',
+  pots: '花盆',
+  pot: '花盆',
+  fertilizers: '肥料',
+  fertilizer: '肥料',
+};
+
+function getCategoryName(category) {
+  if (category === undefined || category === null || String(category).trim() === '') {
+    return '未分类';
+  }
+
+  const key = String(category).trim();
+  return PRODUCT_CATEGORY_NAMES[key.toLowerCase()] || key;
+}
+
 Page({
   data: {
     allProducts: [],        // 全量商品
@@ -13,13 +33,6 @@ Page({
     isLoading: false,
     isSearching: false,
     cartCount: 0,           // 购物车商品总数量（角标）
-  },
-
-  // 类别中文映射
-  categoryNameMap: {
-    plants: '植物',
-    tools: '工具',
-    // 可继续添加
   },
 
   onLoad: function (options) {
@@ -109,7 +122,7 @@ Page({
     const groupedProducts = [];
     const categories = [];
     groupMap.forEach((products, category) => {
-      const name = this.categoryNameMap[category] || category;
+      const name = getCategoryName(category);
       groupedProducts.push({ category, name, products });
       categories.push({ category, name });
     });
